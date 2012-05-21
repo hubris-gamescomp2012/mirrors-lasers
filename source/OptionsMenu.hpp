@@ -6,7 +6,7 @@
 class OptionsMenu : public Scene
 {
 public:
-	OptionsMenu(GUIManager& a_GUIMgr);
+	OptionsMenu(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Renderer);
 	virtual void Update(float a_dt);
 	virtual void UpdateGUISizes();
 	//

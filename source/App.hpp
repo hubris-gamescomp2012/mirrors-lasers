@@ -12,7 +12,7 @@ class GUIManager;
 class App
 {
 public:
-	App(WindowManager& a_WindowMgr, GUIManager& a_GUIMgr, Renderer& a_Renderer);
+	App(WindowManager& a_WindowMgr, GUIManager& a_GUIMgr, Renderer& a_Renderer, ResourceManager& a_ResMgr);
 	~App();
 	//
 	bool Update(float a_Dt);
@@ -21,7 +21,7 @@ public:
 private:
 	Renderer& m_Renderer;
 	WindowManager& m_WindowMgr;
-	ResourceManager* m_pResourceMgr;
+	ResourceManager& m_ResourceMgr;
 	SceneManager* m_pSceneMgr;
 	GUIManager& m_GUIMgr;
 	//

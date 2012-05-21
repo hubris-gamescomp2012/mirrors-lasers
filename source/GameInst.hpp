@@ -3,6 +3,7 @@
 
 #include "Scene.hpp"
 #include "SelectListener.hpp"
+#include <vector>
 
 /*#include <SFGUI/Button.hpp>
 #include <SFGUI/Window.hpp>
@@ -10,12 +11,17 @@
 #include <SFGUI/Table.hpp>
 #include <SFGUI/Label.hpp>*/
 
+class Block;
+class Renderer;
+
 class GameInst : public Scene
 {
 public:
-	GameInst(GUIManager& a_GUIMgr);
+	GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Renderer);
 	bool Start();
 	void Stop();
+	void LoadLevel();
+	void UnloadLevel();
 	virtual void Update(float a_dt);
 	virtual void UpdateGUISizes();
 	//
@@ -26,9 +32,10 @@ public:
 	void Select(void* a_pSelectee, SelectListener::Type a_SelectedType);
 	//
 private:
-	//
+	std::vector<Block*> m_blocks;
 	bool m_Running;
 	SelectListener* m_pSelectListener;
+	Renderer& m_Renderer;
 	//
 };
 

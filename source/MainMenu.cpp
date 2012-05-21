@@ -1,10 +1,10 @@
 #include "MainMenu.hpp"
 #include "GUIManager.hpp"
 
-#include <SFGUI\Button.hpp>
+//#include <SFGUI\Button.hpp>
 
-MainMenu::MainMenu(GUIManager& a_GUIMgr)
-:	Scene(a_GUIMgr)
+MainMenu::MainMenu(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Renderer)
+:	Scene(a_GUIMgr, a_ResMgr, a_Renderer)
 	//
 //,	m_Title(sfg::Label::Create("App"))
 //,	m_pStartButton(sfg::Button::Create("Start"))
@@ -18,6 +18,7 @@ MainMenu::MainMenu(GUIManager& a_GUIMgr)
 	float invHeightScalar = 10;
 	float invWidthScalar = 5;
 	
+	/*
 	//changing font size is slooooow :(
 	//title
 	//m_Title = new sfg::Button();

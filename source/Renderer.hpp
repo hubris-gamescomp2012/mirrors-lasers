@@ -16,6 +16,7 @@ namespace sf
 	class RenderTarget;
 };
 
+class ResourceManager;
 class GUIManager;
 class Button;
 class Entity;
@@ -24,7 +25,7 @@ class Anim;
 class Renderer
 {
 public:
-	Renderer(GUIManager& a_guiMgr, WindowManager& a_WindowMgr);
+	Renderer(GUIManager& a_guiMgr, WindowManager& a_WindowMgr, ResourceManager& a_ResMgr);
 	bool Init();
 	bool Render(float a_dt);
 	bool CleanUp();
@@ -45,9 +46,12 @@ public:
 	//void MouseClick( sf::Vector2f ClickPos );
 	//
 	//void RemoveAllVisible();
+	void AddDrawableSprite(sf::Sprite* a_pSprite);
+	void RemoveDrawableSprite(sf::Sprite* a_pSprite);
 	//
 private:
 	WindowManager& m_WindowMgr;
+	ResourceManager& m_ResMgr;
 	//
 	sf::Sprite* m_pBackgroundImage;
 	//std::vector<sf::Sprite*> m_pVisibleSprites;
@@ -56,6 +60,7 @@ private:
 	//std::list<Entity*> m_pVisibleEntities;
 	//
 	GUIManager& m_guiMgr;
+	std::vector<sf::Sprite*> VisibleSprites;
 };
 
 #endif // RENDERER_H

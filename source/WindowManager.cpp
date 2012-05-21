@@ -15,7 +15,7 @@ WindowManager::WindowManager()
 :	m_pSFMLRenderWindow(new RenderWindow())
 ,	m_IsQuittingNextUpdate(false)
 {
-	m_pSFMLRenderWindow->create(sf::VideoMode(800,600),"Space Economy Sim");
+	m_pSFMLRenderWindow->create(sf::VideoMode(1024,768),"Space Economy Sim");
 	sf::Image Icon;
 	if (Icon.loadFromFile("media/icon[617x480].bmp") && m_pSFMLRenderWindow)
 		m_pSFMLRenderWindow->setIcon(617, 480, Icon.getPixelsPtr());
@@ -57,9 +57,14 @@ void WindowManager::PollEvents(GUIManager& a_GUIMgr)
 				m_IsQuittingNextUpdate = true;
 				break;
 			}
+		case(Event::KeyPressed):
+			{
+				if(curEvent.key.code = sf::Keyboard::Escape)
+					delete m_pSFMLRenderWindow;
+				break;
+			}
 		default:
 			{
-				//
 				//a_GUIMgr.HandleEvent(curEvent);
 				break;
 			}

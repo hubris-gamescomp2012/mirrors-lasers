@@ -3,23 +3,22 @@
 *.lo
 *.o
 
-
 # Compiled Dynamic libraries
 *.so
-
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
 
-
 # project files
 *.ipch
 *.sdf
 *.suo
+*.opensdf
 
 # folders
+Release/
 Debug/
 include/
 lib/

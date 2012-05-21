@@ -25,11 +25,13 @@ public:
 	bool CreateSprite(std::string FilePath, _Out_ sf::Sprite** a_ppOut = NULL );	// _In_ sf::Rect<int>* a_pSubRect = NULL
 	bool CreateAnim(std::string FilePath, sf::Vector2f a_FrameSize, double FrameLength, short numFrames, _Out_ Anim** a_ppOut = NULL );
 	//
-private:
+	std::vector< std::pair<std::string, sf::Sprite*> > GetSprites();
 	//
+private:
 	std::vector< std::pair<std::string, sf::Image*> > Images;
 	std::vector< std::pair<std::string, sf::Texture*> > Textures;
 	std::vector< std::pair<std::string, sf::Sprite*> > Sprites;
+	//
 };
 
 #endif	//RESOURCE_MANAGER_HPP

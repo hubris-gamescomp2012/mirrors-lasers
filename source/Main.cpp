@@ -9,13 +9,14 @@
 #include "guicon.h"
 
 #include <SFML/System.hpp>
-#include <SFGUI/SFGUI.hpp>
+//#include <SFGUI/SFGUI.hpp>
 
 #include "App.hpp"
 #include "ResourceManager.hpp"
 #include "GUIManager.hpp"
 #include "WindowManager.hpp"
 #include "Renderer.hpp"
+#include "ResourceManager.hpp"
 
 //don't use this, it's lazy
 //#pragma comment(lib, "requiredLibrary.lib") 
@@ -44,9 +45,11 @@ int WINAPI WinMain(HINSTANCE a_hInst, HINSTANCE a_hPrevInst, LPSTR a_pCmdLine, i
 	//
 	WindowManager* pWindowMgr = new WindowManager();
 	GUIManager* pGUIMgr = new GUIManager(*pWindowMgr);
-	Renderer renderer(*pGUIMgr,*pWindowMgr);
 
-	App app(*pWindowMgr,*pGUIMgr,renderer);
+	ResourceManager* pResMgr = new ResourceManager();
+	Renderer renderer(*pGUIMgr,*pWindowMgr, *pResMgr);
+	App app(*pWindowMgr,*pGUIMgr,renderer, *pResMgr);
+
 	//
 	sf::Clock deltaTimer;
 	bool quit = false;

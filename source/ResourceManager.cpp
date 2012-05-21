@@ -76,11 +76,12 @@ bool ResourceManager::CreateSprite( std::string FilePath, sf::Sprite** a_ppOut )
 
 	create_sprite:
 	//if sfml creates the sprite, then we're good
-	/*sf::Texture* texture = new sf::Texture();
-	texture->loadFromImage(*Images[imageIndex].second);*/
+	//sf::Texture* texture = new sf::Texture();
+	//texture->loadFromImage(*Images[imageIndex].second);
 	sf::Sprite* sprite = new sf::Sprite(*Textures[textureIndex].second);
-	/*if(a_pSubRect)
-		sprite->set(*a_pSubRect);*/
+	Sprites.push_back( std::pair<std::string, sf::Sprite*>(FilePath, sprite) );
+	//if(a_pSubRect)
+	//	sprite->set(*a_pSubRect);
 	//sf::Vector2f size = texture->getSize();
 	if(a_ppOut)
 		*a_ppOut = sprite;
@@ -138,3 +139,8 @@ bool ResourceManager::CreateAnim(std::string FilePath, sf::Vector2f a_FrameSize,
 	return true;
 }
 */
+
+std::vector< std::pair<std::string, sf::Sprite*> > ResourceManager::GetSprites()
+{
+	return Sprites;
+}

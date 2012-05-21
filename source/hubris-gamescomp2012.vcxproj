@@ -39,9 +39,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>F:\mileswhiticker-hubris-gamescomp2012-0003789\include;$(IncludePath)</IncludePath>
-    <SourcePath>F:\mileswhiticker-hubris-gamescomp2012-0003789\src\SFGUI;$(SourcePath)</SourcePath>
-    <LibraryPath>F:\mileswhiticker-hubris-gamescomp2012-0003789\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$\mirrors-lasers\include;$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
+    <LibraryPath>$\mirrors-lasers\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$\mirrors-lasers\bin;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -80,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="GameInst.cpp" />
     <ClCompile Include="guicon.cpp" />
     <ClCompile Include="GUIManager.cpp" />
@@ -97,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
+    <ClInclude Include="Block.hpp" />
     <ClInclude Include="Defs.hpp" />
     <ClInclude Include="GameInst.hpp" />
     <ClInclude Include="guicon.h" />

@@ -7,12 +7,12 @@
 
 #include <iostream>
 
-App::App(WindowManager& a_WindowMgr, GUIManager& a_GUIMgr, Renderer& a_Renderer)
+App::App(WindowManager& a_WindowMgr, GUIManager& a_GUIMgr, Renderer& a_Renderer, ResourceManager& a_ResMgr)
 :	m_GUIMgr(a_GUIMgr)
 ,	m_WindowMgr(a_WindowMgr)
 ,	m_Renderer(a_Renderer)
-,	m_pResourceMgr(new ResourceManager())
-,	m_pSceneMgr(new SceneManager(a_GUIMgr, *m_pResourceMgr, m_Renderer))
+,	m_ResourceMgr(a_ResMgr)
+,	m_pSceneMgr(new SceneManager(a_GUIMgr, m_ResourceMgr, m_Renderer))
 	//
 ,	m_IsQuittingNextUpdate(false)
 {
