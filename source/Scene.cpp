@@ -12,6 +12,7 @@ Scene::Scene(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Render
 :	m_GUIMgr(a_GUIMgr)
 ,	m_ResMgr(a_ResMgr)
 ,	m_Renderer(a_Renderer)
+,	m_pInputHandler(NULL)
 {
 	//
 }
