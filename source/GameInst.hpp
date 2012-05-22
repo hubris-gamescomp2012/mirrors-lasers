@@ -3,6 +3,7 @@
 
 #include "Scene.hpp"
 #include "SelectListener.hpp"
+#include "ResourceManager.hpp"
 #include <vector>
 
 #include <SFGUI/Button.hpp>
@@ -13,6 +14,10 @@
 
 class Block;
 class Renderer;
+
+namespace sf {
+	class Sprite;
+}
 
 class GameInst : public Scene
 {
@@ -31,10 +36,13 @@ public:
 	//
 private:
 	std::vector<Block*> m_blocks;
+	std::vector<SpriteID> m_laserSprites;
 	bool m_Running;
 	SelectListener* m_pSelectListener;
 	Renderer& m_Renderer;
-	//
+
+	int startX;
+	int startY;
 };
 
 #endif	//GAME_INST_HPP

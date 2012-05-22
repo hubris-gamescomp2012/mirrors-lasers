@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include "ResourceManager.hpp"
 
 class MainMenu;
 class OptionsMenu;
@@ -10,7 +11,6 @@ class GameInst;
 class Scene;
 
 class Renderer;
-class ResourceManager;
 class GUIManager;
 
 namespace sf
@@ -59,6 +59,8 @@ private:
 	ResourceManager& m_ResMgr;
 	GUIManager& m_GUIMgr;
 	Renderer& m_Renderer;
+
+	std::vector<SpriteID> m_sprites;
 	//
 };
 

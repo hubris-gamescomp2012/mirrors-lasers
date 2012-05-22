@@ -6,6 +6,7 @@
 #include <list>
 #include <vector>
 #include <SFML/System/Vector2.hpp>
+#include "ResourceManager.hpp"
 
 //predeclares
 class WindowManager;
@@ -16,7 +17,6 @@ namespace sf
 	class RenderTarget;
 };
 
-class ResourceManager;
 class GUIManager;
 class Button;
 class Entity;
@@ -46,8 +46,8 @@ public:
 	//void MouseClick( sf::Vector2f ClickPos );
 	//
 	//void RemoveAllVisible();
-	void AddDrawableSprite(sf::Sprite* a_pSprite);
-	void RemoveDrawableSprite(sf::Sprite* a_pSprite);
+	void AddDrawableSprite(SpriteID* a_pSprite);
+	void RemoveDrawableSprite(SpriteID* a_pSprite);
 	//
 private:
 	WindowManager& m_WindowMgr;
@@ -60,7 +60,7 @@ private:
 	//std::list<Entity*> m_pVisibleEntities;
 	//
 	GUIManager& m_guiMgr;
-	std::vector<sf::Sprite*> VisibleSprites;
+	std::vector<SpriteID*> VisibleSprites;
 };
 
 #endif // RENDERER_H
