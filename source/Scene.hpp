@@ -4,18 +4,18 @@
 #include <vector>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
-//#include <SFGUI/SharedPtr.hpp>
+#include <SFGUI/SharedPtr.hpp>
 
 namespace sf
 {
 	class Sprite;
 };
 
-/*namespace sfg
+namespace sfg
 {
 	class SFGUI;
 	class Widget;
-};*/
+};
 
 class Button;
 class Entity;
@@ -45,7 +45,7 @@ protected:
 	Renderer& m_Renderer;
 	//
 	sf::Sprite* m_pBackgroundImage;
-	//std::vector< sfg::SharedPtr<sfg::Widget> > Widgets;
+	std::vector< sfg::SharedPtr<sfg::Widget> > Widgets;
 };
 
 #endif

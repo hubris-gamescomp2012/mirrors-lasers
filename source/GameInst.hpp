@@ -6,11 +6,11 @@
 #include "ResourceManager.hpp"
 #include <vector>
 
-/*#include <SFGUI/Button.hpp>
+#include <SFGUI/Button.hpp>
 #include <SFGUI/Window.hpp>
 #include <SFGUI/Notebook.hpp>
 #include <SFGUI/Table.hpp>
-#include <SFGUI/Label.hpp>*/
+#include <SFGUI/Label.hpp>
 
 class Block;
 class Renderer;
@@ -30,9 +30,7 @@ public:
 	virtual void Update(float a_dt);
 	virtual void UpdateGUISizes();
 	//
-	//sfg::Button::Ptr m_pQuitMenuButton;
-	//sfg::Notebook::Ptr m_pListView;
-	//sfg::Window::Ptr m_pDetailView;
+	sfg::Button::Ptr m_pQuitMenuButton;
 	//
 	void Select(void* a_pSelectee, SelectListener::Type a_SelectedType);
 	//

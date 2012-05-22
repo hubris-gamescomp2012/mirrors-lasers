@@ -12,7 +12,7 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 :	Scene(a_GUIMgr, a_ResMgr, a_Renderer)
 ,	m_Running(false)
 ,	m_Renderer(a_Renderer)
-//,	m_pQuitMenuButton(sfg::Button::Create("Quit to Main Menu"))
+,	m_pQuitMenuButton(sfg::Button::Create("Quit to Main Menu"))
 	//
 {
 	//grab the screen dimensions
@@ -52,13 +52,13 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	//double invWidthScalar = 5;
 	
 	//quit to menu button
-	//sfg::Context::Get().GetEngine().SetProperty("Button", "FontSize", 20.0f);
-	/*m_pQuitMenuButton->SetRequisition( sf::Vector2f(windowDim.x / 20, windowDim.y / 20) );
+	sfg::Context::Get().GetEngine().SetProperty("Button", "FontSize", 20.0f);
+	m_pQuitMenuButton->SetRequisition( sf::Vector2f(windowDim.x / 20, windowDim.y / 20) );
 	allocRect = m_pQuitMenuButton->GetAllocation();
 	m_pQuitMenuButton->SetPosition( sf::Vector2f(5, 5) );
 	m_pQuitMenuButton->Show(false);
 	m_GUIMgr.AddWidget(m_pQuitMenuButton);
-	Widgets.push_back(m_pQuitMenuButton);*/
+	Widgets.push_back(m_pQuitMenuButton);
 }
 
 bool GameInst::Start()
@@ -125,11 +125,12 @@ void GameInst::LoadLevel()
 	while( std::getline(file,line) )
 	{//
 		char buffer[32];
-		sprintf(buffer, line.c_str());
+		char* tokenBuffer;
+		sprintf_s(buffer, 32, line.c_str());
 
 		// Get the block IDs to link them
-		int block1 = atoi(strtok(buffer,",")) + atoi(strtok(NULL ,"=")) * 32;
-		int block2 = atoi(strtok(NULL,",")) + atoi(strtok(NULL,",")) * 32;
+		int block1 = atoi(strtok_s(buffer,",", &tokenBuffer)) + atoi(strtok_s(NULL ,"=", &tokenBuffer)) * 32;
+		int block2 = atoi(strtok_s(NULL,",", &tokenBuffer)) + atoi(strtok_s(NULL,",", &tokenBuffer)) * 32;
 		
 		// Link them
 		m_blocks[block1]->SetOutput(block2);
@@ -209,9 +210,10 @@ void GameInst::Update(float a_dt)
 	// Calculate and create new laser path
 	sf::Vector2f laserPos = sf::Vector2f((float)startX,(float)startY);
 	sf::Vector2f laserDir = sf::Vector2f(4.0f,0.0f);
-	int iter = 0;
+	unsigned int iter = 0;
 	while (laserPos.x >= 0 && laserPos.x <= 1024 && laserPos.y >= 0 && laserPos.y <= 768 && iter < m_laserSprites.size()) {
 		m_laserSprites[iter].sprite->setPosition(laserPos);
+		
 		laserPos += laserDir;
 		++iter;
 	}

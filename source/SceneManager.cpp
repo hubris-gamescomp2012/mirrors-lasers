@@ -11,8 +11,8 @@
 #include "OptionsMenu.hpp"
 #include "GameInst.hpp"
 
-//#include <SFGUI/Label.hpp>
-//#include <SFGUI/Button.hpp>
+#include <SFGUI/Label.hpp>
+#include <SFGUI/Button.hpp>
 
 SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Renderer)
 :	m_ResMgr(a_ResMgr)
@@ -35,9 +35,9 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 
 	sf::Sprite* pBG = spriteID.sprite;
 	m_pMainMenu->SetBackground(pBG);
-	//m_pMainMenu->m_pStartButton->OnLeftClick.Connect(&SceneManager::GotoGameScene, this);
-	//m_pMainMenu->m_pOptionsButton->OnLeftClick.Connect(&SceneManager::GotoOptionsScene, this);
-	//m_pMainMenu->m_pQuitButton->OnLeftClick.Connect(&SceneManager::Quit, this);
+	m_pMainMenu->m_pStartButton->OnLeftClick.Connect(&SceneManager::GotoGameScene, this);
+	m_pMainMenu->m_pOptionsButton->OnLeftClick.Connect(&SceneManager::GotoOptionsScene, this);
+	m_pMainMenu->m_pQuitButton->OnLeftClick.Connect(&SceneManager::Quit, this);
 	Scenes[SCENE_MAINMENU] = m_pMainMenu;
 	
 	//scale bg to fit the screen
@@ -67,9 +67,9 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 
 	pBG = spriteID2.sprite;
 	m_pGameInst->SetBackground(spriteID2.sprite);
-	//m_pGameInst->m_pQuitMenuButton->OnLeftClick.Connect(&SceneManager::GotoMenuScene, this);
+	m_pGameInst->m_pQuitMenuButton->OnLeftClick.Connect(&SceneManager::GotoMenuScene, this);
+
 	Scenes[SCENE_GAMEINST] = m_pGameInst;
-	m_pGameInst->Start();
 
 	//scale bg to fit the screen
 	if(pBG)
@@ -82,7 +82,7 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 	}
 
 	//set the main menu as the first scene
-	EnableSceneByID(SCENE_GAMEINST);
+	EnableSceneByID(SCENE_MAINMENU);
 }
 
 SceneManager::~SceneManager()
