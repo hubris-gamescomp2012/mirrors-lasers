@@ -49,6 +49,9 @@
     <ClCompile Include="Block.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -94,6 +97,9 @@
       <Filter>Header Files\Application</Filter>
     </ClInclude>
     <ClInclude Include="Block.hpp">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.hpp">
       <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
   </ItemGroup>
