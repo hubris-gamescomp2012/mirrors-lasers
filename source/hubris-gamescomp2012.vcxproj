@@ -89,6 +89,7 @@
     <ClCompile Include="guicon.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="OptionsMenu.cpp" />
@@ -97,8 +98,7 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="SceneTraversals.cpp" />
-    <ClCompile Include="SelectListener.cpp" />
+    <ClCompile Include="SceneManager_Traversals.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +110,7 @@
     <ClInclude Include="guicon.h" />
     <ClInclude Include="GUIManager.hpp" />
     <ClInclude Include="Helpers.hpp" />
+    <ClInclude Include="InputHandler.hpp" />
     <ClInclude Include="MainMenu.hpp" />
     <ClInclude Include="OptionsMenu.hpp" />
     <ClInclude Include="Player.hpp" />
@@ -117,7 +118,6 @@
     <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="SceneManager.hpp" />
-    <ClInclude Include="SelectListener.hpp" />
     <ClInclude Include="WindowManager.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

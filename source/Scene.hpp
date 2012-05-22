@@ -24,6 +24,7 @@ class Anim;
 class GUIManager;
 class ResourceManager;
 class Renderer;
+class InputHandler;
 
 class Scene
 {
@@ -39,6 +40,9 @@ public:
 	virtual void ShowScene();
 	virtual void HideScene();
 	//
+	void SetInputHandler(InputHandler* a_pInputHandler);
+	InputHandler* GetInputHandler();
+	//
 protected:
 	GUIManager& m_GUIMgr;
 	ResourceManager& m_ResMgr;
@@ -46,6 +50,9 @@ protected:
 	//
 	sf::Sprite* m_pBackgroundImage;
 	std::vector< sfg::SharedPtr<sfg::Widget> > Widgets;
+	//
+	InputHandler* m_pInputHandler;
+	//
 };
 
 #endif

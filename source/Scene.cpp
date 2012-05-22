@@ -1,10 +1,10 @@
 #include "Scene.hpp"
+
 #include "App.hpp"
 #include "Renderer.hpp"
 #include "GUIManager.hpp"
 #include "ResourceManager.hpp"
-
-//#include <SFGUI/SFGUI.hpp>
+#include "InputHandler.hpp"
 
 #include <iostream>
 
@@ -47,4 +47,14 @@ void Scene::SetBackground(sf::Sprite* a_pBGImage)
 sf::Sprite* Scene::GetBackground()
 {
 	return m_pBackgroundImage;
+}
+
+void Scene::SetInputHandler(InputHandler* a_pInputHandler)
+{
+	m_pInputHandler = a_pInputHandler;
+}
+
+InputHandler* Scene::GetInputHandler()
+{
+	return m_pInputHandler;
 }
