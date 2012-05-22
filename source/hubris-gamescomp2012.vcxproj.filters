@@ -16,9 +16,6 @@
     <ClCompile Include="OptionsMenu.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
@@ -34,18 +31,6 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers.cpp">
-      <Filter>Source Files\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="guicon.cpp">
-      <Filter>Source Files\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneTraversals.cpp">
-      <Filter>Source Files\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="SelectListener.cpp">
-      <Filter>Source Files\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Block.cpp">
       <Filter>Source Files\GameObjects</Filter>
     </ClCompile>
@@ -54,6 +39,21 @@
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="guicon.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager_Traversals.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>Source Files\Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,23 +81,8 @@
     <ClInclude Include="GameInst.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.hpp">
-      <Filter>Header Files\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="Scene.hpp">
       <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="guicon.h">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers.hpp">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Defs.hpp">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="SelectListener.hpp">
-      <Filter>Header Files\Application</Filter>
     </ClInclude>
     <ClInclude Include="Block.hpp">
       <Filter>Header Files\GameObjects</Filter>
@@ -107,6 +92,21 @@
     </ClInclude>
     <ClInclude Include="GameObject.hpp">
       <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Defs.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="guicon.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.hpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.hpp">
+      <Filter>Header Files\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.hpp">
+      <Filter>Header Files\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +142,12 @@
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{4c9fb107-8654-402d-908c-83ad940f1642}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{edad7faf-e65e-4d6c-b3f8-9972c6183738}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{be689e09-613d-44ac-bd2d-11fc846d0dbf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

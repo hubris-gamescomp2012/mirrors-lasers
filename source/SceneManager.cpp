@@ -1,18 +1,19 @@
-
-#include <SFGUI/SFGUI.hpp>
-#include <SFML/Graphics.hpp>
-
 #include "SceneManager.hpp"
+
 #include "Renderer.hpp"
 #include "ResourceManager.hpp"
 #include "GUIManager.hpp"
+
+#include "InputHandler.hpp"
 
 #include "MainMenu.hpp"
 #include "OptionsMenu.hpp"
 #include "GameInst.hpp"
 
+#include <SFML/Graphics.hpp>
 #include <SFGUI/Label.hpp>
 #include <SFGUI/Button.hpp>
+#include <SFGUI/SFGUI.hpp>
 
 SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Renderer)
 :	m_ResMgr(a_ResMgr)
@@ -23,6 +24,7 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 ,	m_pMainMenu(NULL)
 ,	m_pOptionsMenu(NULL)
 ,	m_pGameInst(NULL)
+,	m_pInputHandler(NULL)
 	//
 ,	m_IsQuittingNextUpdate(false)
 {
@@ -124,4 +126,14 @@ void SceneManager::Update(float a_Dt)
 {
 	//this is just a shell to update the scene, and the only scene that needs updating is the game scene
 	Scenes[m_CurScene]->Update(a_Dt);
+}
+
+void SceneManager::SetInputHandler(InputHandler* a_pInputHandler)
+{
+	m_pInputHandler = a_pInputHandler;
+}
+
+InputHandler* SceneManager::GetInputHandler()
+{
+	return m_pInputHandler;
 }

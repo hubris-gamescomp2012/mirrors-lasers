@@ -13,6 +13,8 @@ class Scene;
 class Renderer;
 class GUIManager;
 
+class InputHandler;
+
 namespace sf
 {
 	class Sprite;
@@ -41,6 +43,9 @@ public:
 	void Update(float a_Dt);
 	bool CheckQuitNextUpdate();
 	//
+	void SetInputHandler(InputHandler* a_pInputHandler);
+	InputHandler* GetInputHandler();
+	//
 private:
 	//
 	void GotoGameScene();
@@ -59,7 +64,9 @@ private:
 	ResourceManager& m_ResMgr;
 	GUIManager& m_GUIMgr;
 	Renderer& m_Renderer;
-
+	//
+	InputHandler* m_pInputHandler;
+	//
 	std::vector<SpriteID> m_sprites;
 	//
 };

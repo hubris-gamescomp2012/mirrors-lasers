@@ -1,5 +1,4 @@
 #include "Player.hpp"
-
 #include <iostream>
 
 Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)

@@ -1,26 +1,25 @@
-#include <SFML/Graphics/RenderWindow.hpp>
-//#include <SFML/Window.hpp>
-//#include <SFML/System.hpp>
-
-#include <iostream>
-
 #include "WindowManager.hpp"
 #include "GUIManager.hpp"
+#include "InputHandler.hpp"
 
-//#include "Callbacks.hpp"
+#include <SFML/Graphics/RenderWindow.hpp>
+
+#include <iostream>
 
 using namespace sf;
 
 WindowManager::WindowManager()
 :	m_pSFMLRenderWindow(new RenderWindow())
 ,	m_IsQuittingNextUpdate(false)
+,	m_pInputHandler(NULL)
 {
-
 	m_pSFMLRenderWindow->create(sf::VideoMode(1024,768),"Hubris Games, QGC 2012 - Mirrors and Lasers");
 	sf::Image Icon;
-	if (Icon.loadFromFile("media/icon[617x480].bmp") && m_pSFMLRenderWindow)
-		m_pSFMLRenderWindow->setIcon(617, 480, Icon.getPixelsPtr());
+	if (Icon.loadFromFile("media/robicon.jpg") && m_pSFMLRenderWindow)
+		m_pSFMLRenderWindow->setIcon(128, 128, Icon.getPixelsPtr());
 	m_pSFMLRenderWindow->resetGLStates();
+	//
+	m_pInputHandler = new InputHandler();
 }
 
 bool WindowManager::CheckQuitNextUpdate()
@@ -56,13 +55,18 @@ void WindowManager::PollEvents(GUIManager& a_GUIMgr)
 		case(Event::KeyPressed):
 			{	
 				if(curEvent.key.code = sf::Keyboard::Escape)
+				{
 					m_IsQuittingNextUpdate = true;
-					
-				break;
+					break;
+				}
+				//fall through
 			}
 		default:
 			{
-				a_GUIMgr.HandleEvent(curEvent);
+				//let our current input_handler deal with it
+				if(m_pInputHandler)
+					m_pInputHandler->HandleInputEvent(curEvent);
+				//a_GUIMgr.HandleEvent(curEvent);
 				break;
 			}
 		}
@@ -95,4 +99,14 @@ sf::Vector2f WindowManager::GetWindowDim()
 	out.y = (float)m_pSFMLRenderWindow->getSize().y;
 	out.x = (float)m_pSFMLRenderWindow->getSize().x;
 	return out;
+}
+
+void WindowManager::SetInputHandler(InputHandler* a_pInputHandler)
+{
+	m_pInputHandler = a_pInputHandler;
+}
+
+InputHandler* WindowManager::GetInputHandler()
+{
+	return m_pInputHandler;
 }
