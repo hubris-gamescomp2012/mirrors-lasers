@@ -1,12 +1,13 @@
 #ifndef	PLAYER_HPP
 #define PLAYER_HPP
 
-#include <chipmunk\chipmunk.h>
+#include "GameObject.hpp"
 
-class Player
+class Player : public GameObject
 {
 public:
-	Player();
+	Player(ResourceManager& a_ResMgr, cpSpace& a_Space);
+	virtual void Update(float a_Dt);
 	//
 private:
 	//
