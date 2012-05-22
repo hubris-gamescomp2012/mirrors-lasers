@@ -21,8 +21,6 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	//grab the screen dimensions
 	sf::Vector2f windowDim = m_GUIMgr.GetWindowDim();
 
-	//to handle button presses and the like
-	m_pSelectListener = new SelectListener(*this);
 	//setup gui
 	sf::FloatRect allocRect;
 	//double invHeightScalar = 10;
@@ -181,9 +179,9 @@ void GameInst::LoadLevel()
 
 	file.open(("media/level1_binds.txt"));
 	while( std::getline(file,line) )
-	{//
+	{
 		char buffer[32];
-		char* tokenBuffer;
+		//char* tokenBuffer;
 		sprintf_s(buffer, 32, line.c_str());
 
 		// Get the block IDs to link them
@@ -336,11 +334,6 @@ void GameInst::Update(float a_dt)
 }
 
 void GameInst::UpdateGUISizes()
-{
-	//
-}
-
-void GameInst::Select(void* a_pSelectee, SelectListener::Type a_SelectedType)
 {
 	//
 }

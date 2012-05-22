@@ -4,6 +4,7 @@
 #include "ResourceManager.hpp"
 #include "SceneManager.hpp"
 #include "GUIManager.hpp"
+#include "InputHandler.hpp"
 
 #include <iostream>
 
@@ -16,6 +17,7 @@ App::App(WindowManager& a_WindowMgr, GUIManager& a_GUIMgr, Renderer& a_Renderer,
 	//
 ,	m_IsQuittingNextUpdate(false)
 {
+	m_pSceneMgr->SetInputHandler(m_WindowMgr.GetInputHandler());
 	//
 }
 

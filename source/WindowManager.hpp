@@ -11,6 +11,7 @@ namespace sf
 }
 
 class GUIManager;
+class InputHandler;
 
 class WindowManager
 {
@@ -31,11 +32,15 @@ public:
 	//
 	bool CheckQuitNextUpdate();
 	//
+	void SetInputHandler(InputHandler* a_pInputHandler);
+	InputHandler* GetInputHandler();
+	//
 	void CleanUp();
 private:
 	sf::RenderWindow* m_pSFMLRenderWindow;
 	bool m_IsQuittingNextUpdate;
 	//
+	InputHandler* m_pInputHandler;
 };
 
 #endif

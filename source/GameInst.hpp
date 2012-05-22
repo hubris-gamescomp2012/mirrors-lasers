@@ -2,7 +2,6 @@
 #define GAME_INST_HPP
 
 #include "Scene.hpp"
-#include "SelectListener.hpp"
 #include "ResourceManager.hpp"
 #include <vector>
 
@@ -43,8 +42,6 @@ public:
 	//
 	sfg::Button::Ptr m_pQuitMenuButton;
 	//
-	void Select(void* a_pSelectee, SelectListener::Type a_SelectedType);
-
 	float GetLaserRot();
 	void SetLaserRot(float a_rot);
 	//
@@ -53,7 +50,6 @@ private:
 	std::vector<Block*> m_blocks;
 	std::vector<SpriteID> m_laserSprites;
 	bool m_Running;
-	SelectListener* m_pSelectListener;
 	Renderer& m_Renderer;
 	ResourceManager& m_ResMgr;
 	//
