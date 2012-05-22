@@ -57,7 +57,7 @@ void WindowManager::PollEvents(GUIManager& a_GUIMgr)
 			{	
 				if(curEvent.key.code = sf::Keyboard::Escape)
 					m_IsQuittingNextUpdate = true;
-					
+
 				break;
 			}
 		default:

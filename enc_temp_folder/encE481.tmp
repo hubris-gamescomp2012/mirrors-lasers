@@ -33,9 +33,6 @@ public:
 	sfg::Button::Ptr m_pQuitMenuButton;
 	//
 	void Select(void* a_pSelectee, SelectListener::Type a_SelectedType);
-
-	float GetLaserRot();
-	void SetLaserRot(float a_rot);
 	//
 private:
 	std::vector<Block*> m_blocks;
@@ -47,7 +44,7 @@ private:
 	int startX;
 	int startY;
 
-	float laserRotation;
+	f
 };
 
 #endif	//GAME_INST_HPP

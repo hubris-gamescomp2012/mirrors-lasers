@@ -13,7 +13,6 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 ,	m_Running(false)
 ,	m_Renderer(a_Renderer)
 ,	m_pQuitMenuButton(sfg::Button::Create("Quit to Main Menu"))
-,	laserRotation(2.5f)
 	//
 {
 	//grab the screen dimensions
@@ -219,8 +218,8 @@ void GameInst::Update(float a_dt)
 			if (pos.x + 48 > laserPos.x + 16 && pos.x < laserPos.x + 16 && pos.y + 48 > laserPos.y + 16 && pos.y < laserPos.y + 16) {
 
 				// Rotate the laser
-				float cs = cos(laserRotation);
-				float sn = sin(laserRotation);
+				float cs = cos(2.5f);
+				float sn = sin(2.5f);
 				laserDir.x = cs * laserDir.x - sn * laserDir.y;
 				laserDir.y = sn * laserDir.x + cs * laserDir.y;
 
@@ -256,10 +255,3 @@ void GameInst::Select(void* a_pSelectee, SelectListener::Type a_SelectedType)
 	//
 }
 
-float GameInst::GetLaserRot() {
-	return laserRotation;
-}
-
-void GameInst::SetLaserRot(float a_rot) {
-	laserRotation = a_rat;
-}
