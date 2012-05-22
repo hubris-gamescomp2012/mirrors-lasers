@@ -1,24 +1,23 @@
 #include "MainMenu.hpp"
 #include "GUIManager.hpp"
 
-//#include <SFGUI\Button.hpp>
+#include <SFGUI\Button.hpp>
+#include <SFGUI\Label.hpp>
 
 MainMenu::MainMenu(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Renderer)
 :	Scene(a_GUIMgr, a_ResMgr, a_Renderer)
 	//
-//,	m_Title(sfg::Label::Create("App"))
-//,	m_pStartButton(sfg::Button::Create("Start"))
-//,	m_pOptionsButton(sfg::Button::Create("Options"))
-//,	m_pQuitButton(sfg::Button::Create("Quit"))
+,	m_Title(sfg::Label::Create("Mirrors and Lasers, Qantm Games Comp 2012"))
+,	m_pStartButton(sfg::Button::Create("Start"))
+,	m_pOptionsButton(sfg::Button::Create("Options"))
+,	m_pQuitButton(sfg::Button::Create("Quit"))
 {
-	/*
 	//setup gui
 	sf::Vector2f windowDim = m_GUIMgr.GetWindowDim();
 	sf::FloatRect allocRect;
 	float invHeightScalar = 10;
 	float invWidthScalar = 5;
 	
-	/*
 	//changing font size is slooooow :(
 	//title
 	//m_Title = new sfg::Button();
@@ -41,7 +40,7 @@ MainMenu::MainMenu(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	
 	//options button
 	//sfg::Context::Get().GetEngine().SetProperty("Button", "FontSize", 20.0f);
-	/*m_pOptionsButton->SetRequisition( sf::Vector2f(windowDim.x / invWidthScalar, windowDim.y / invHeightScalar) );
+	m_pOptionsButton->SetRequisition( sf::Vector2f(windowDim.x / invWidthScalar, windowDim.y / invHeightScalar) );
 	allocRect = m_pOptionsButton->GetAllocation();
 	m_pOptionsButton->SetPosition( sf::Vector2f(windowDim.x/4 - allocRect.width/2, 3*windowDim.y/5 - allocRect.height/2) );
 	m_pOptionsButton->Show(false);
@@ -55,7 +54,7 @@ MainMenu::MainMenu(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	m_pQuitButton->SetPosition( sf::Vector2f(windowDim.x/4 - allocRect.width/2, 4*windowDim.y/5 - allocRect.height/2) );
 	m_pQuitButton->Show(false);
 	m_GUIMgr.AddWidget(m_pQuitButton);
-	Widgets.push_back(m_pQuitButton);*/
+	Widgets.push_back(m_pQuitButton);
 }
 
 void MainMenu::Update(float a_dt)
