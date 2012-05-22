@@ -15,7 +15,7 @@ WindowManager::WindowManager()
 :	m_pSFMLRenderWindow(new RenderWindow())
 ,	m_IsQuittingNextUpdate(false)
 {
-	m_pSFMLRenderWindow->create(sf::VideoMode(1024,768),"Space Economy Sim");
+	m_pSFMLRenderWindow->create(sf::VideoMode(1024,768),"Mirrors 'n Lasers");
 	sf::Image Icon;
 	if (Icon.loadFromFile("media/icon[617x480].bmp") && m_pSFMLRenderWindow)
 		m_pSFMLRenderWindow->setIcon(617, 480, Icon.getPixelsPtr());
@@ -46,11 +46,6 @@ void WindowManager::PollEvents(GUIManager& a_GUIMgr)
 			{
 				Callback::MouseClick(curEvent.mouseButton);
 				break;
-			}
-		case(Event::KeyPressed):
-			{
-				Callback::KeyPress(curEvent.key);
-				break;
 			}*/
 		case(Event::Closed):
 			{
@@ -60,7 +55,7 @@ void WindowManager::PollEvents(GUIManager& a_GUIMgr)
 		case(Event::KeyPressed):
 			{
 				if(curEvent.key.code = sf::Keyboard::Escape)
-					delete m_pSFMLRenderWindow;
+					m_IsQuittingNextUpdate = true;
 				break;
 			}
 		default:
@@ -86,6 +81,10 @@ void WindowManager::CleanUp()
 {
 	m_pSFMLRenderWindow->close();
 	delete m_pSFMLRenderWindow;
+}
+
+WindowManager::~WindowManager() {
+	CleanUp();
 }
 
 sf::Vector2f WindowManager::GetWindowDim()

@@ -16,6 +16,7 @@ class WindowManager
 {
 public:
 	WindowManager();
+	~WindowManager();
 	/*static WindowMgr& GetReference()
 	{
 		static WindowMgr instance;

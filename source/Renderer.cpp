@@ -40,7 +40,7 @@ bool Renderer::Render(float a_dt)
 	//render sprites
 	for(auto it = VisibleSprites.begin(); it != VisibleSprites.end(); it++ )
 	{
-		sf::Sprite* sprite = *it;
+		sf::Sprite* sprite = (*it)->sprite;
 		renderWindow.draw(*sprite);
 	}
 
@@ -68,15 +68,18 @@ sf::Vector2f Renderer::GetWindowDim()
 	return m_WindowMgr.GetWindowDim();
 }
 
-void Renderer::AddDrawableSprite(sf::Sprite* a_pSprite)
+void Renderer::AddDrawableSprite(SpriteID* a_pSprite)
 {
 	VisibleSprites.push_back(a_pSprite);
 }
 
-void Renderer::RemoveDrawableSprite(sf::Sprite* a_pSprite)
+void Renderer::RemoveDrawableSprite(SpriteID* a_pSprite)
 {
-	for(auto it = VisibleSprites.begin(); it != VisibleSprites.end(); it++ )
+	for(auto it = VisibleSprites.begin(); it != VisibleSprites.end();)
 	{
-		//if((*it)->)
+		if ((*it)->ID == a_pSprite->ID) 
+			it = VisibleSprites.erase(it);
+		else
+			++it;
 	}
 }
