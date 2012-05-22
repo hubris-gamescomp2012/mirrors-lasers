@@ -52,8 +52,9 @@ private:
 	bool m_Running;
 	SelectListener* m_pSelectListener;
 	Renderer& m_Renderer;
+	ResourceManager& m_ResMgr;
 	//
-	cpSpace *m_pSpace;	//chipmunk physworld
+	cpSpace* m_pSpace;	//chipmunk physworld
 	StaticRigidQuad m_WorldBounds;	//world boundaries
 	//
 	int startX;
