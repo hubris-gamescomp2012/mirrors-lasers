@@ -12,7 +12,7 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 :	Scene(a_GUIMgr, a_ResMgr, a_Renderer)
 ,	m_Running(false)
 ,	m_Renderer(a_Renderer)
-//,	m_pQuitMenuButton(sfg::Button::Create("Quit to Main Menu"))
+,	m_pQuitMenuButton(sfg::Button::Create("Quit to Main Menu"))
 	//
 {
 	//grab the screen dimensions
@@ -53,12 +53,12 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	
 	//quit to menu button
 	//sfg::Context::Get().GetEngine().SetProperty("Button", "FontSize", 20.0f);
-	/*m_pQuitMenuButton->SetRequisition( sf::Vector2f(windowDim.x / 20, windowDim.y / 20) );
+	m_pQuitMenuButton->SetRequisition( sf::Vector2f(windowDim.x / 20, windowDim.y / 20) );
 	allocRect = m_pQuitMenuButton->GetAllocation();
 	m_pQuitMenuButton->SetPosition( sf::Vector2f(5, 5) );
 	m_pQuitMenuButton->Show(false);
 	m_GUIMgr.AddWidget(m_pQuitMenuButton);
-	Widgets.push_back(m_pQuitMenuButton);*/
+	Widgets.push_back(m_pQuitMenuButton);
 }
 
 bool GameInst::Start()

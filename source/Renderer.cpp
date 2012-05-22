@@ -34,8 +34,8 @@ bool Renderer::Render(float a_dt)
 	renderWindow.clear();
 
 	//first, draw the background image if there is one
-	/*if(m_pBackgroundImage)
-		renderWindow.draw(*m_pBackgroundImage);*/
+	if(m_pBackgroundImage)
+		renderWindow.draw(*m_pBackgroundImage);
 
 	//render sprites
 	for(auto it = VisibleSprites.begin(); it != VisibleSprites.end(); it++ )
