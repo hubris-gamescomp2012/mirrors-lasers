@@ -1,18 +1,16 @@
-#include <SFML/Graphics.hpp>
-#include "ResourceManager.hpp"
 #include "block.hpp"
 #include <iostream>
 
-Block::Block(ResourceManager& a_ResMgr, int a_type)
-: m_resMgr(a_ResMgr)
-, m_activated(false)
-, m_output(-1)
-, m_blockType(a_type)
+Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type)
+:	GameObject(a_ResMgr, a_Space)
+,	m_activated(false)
+,	m_output(-1)
+,	m_blockType(a_type)
 {
 	// Set sprite based on type
 	switch(m_blockType) {
 		case BLOCK_SOLID:
-			m_resMgr.CreateSprite("media/block.png", &m_pSprite);
+			m_resMgr.CreateSprite("media/block.png", &m_Sprite);
 			break;
 		case BLOCK_GLASS:
 			//
@@ -33,16 +31,6 @@ Block::Block(ResourceManager& a_ResMgr, int a_type)
 			std::cout << "invalid block type!\n";
 			break;
 	}
-	
-}
-
-Block::~Block() {
-	m_resMgr.DeleteSprite(m_pSprite.ID);
-}
-
-SpriteID* Block::GetSprite()
-{
-	return &m_pSprite;
 }
 
 void Block::SetOutput(int a_output) {
