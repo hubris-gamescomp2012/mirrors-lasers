@@ -59,9 +59,8 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 	pBG = new sf::Sprite();
 	a_ResMgr.CreateSprite("media/starry[1280x853].bmp", &pBG);
 	m_pGameInst->SetBackground(pBG);
-	//m_pGameInst->m_pQuitMenuButton->OnLeftClick.Connect(&SceneManager::GotoMenuScene, this);
+	m_pGameInst->m_pQuitMenuButton->OnLeftClick.Connect(&SceneManager::GotoMenuScene, this);
 	Scenes[SCENE_GAMEINST] = m_pGameInst;
-	//m_pGameInst->Start();
 
 	//scale bg to fit the screen
 	if(pBG)
