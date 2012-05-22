@@ -187,11 +187,11 @@ void GameInst::LoadLevel()
 		sprintf_s(buffer, 32, line.c_str());
 
 		// Get the block IDs to link them
-		int block1 = atoi(strtok_s(buffer,",", &tokenBuffer)) + atoi(strtok_s(NULL ,"=", &tokenBuffer)) * 32;
-		int block2 = atoi(strtok_s(NULL,",", &tokenBuffer)) + atoi(strtok_s(NULL,",", &tokenBuffer)) * 32;
+		//int block1 = atoi(strtok_s(buffer,",", &tokenBuffer)) + atoi(strtok_s(NULL ,"=", &tokenBuffer)) * 32;
+		//int block2 = atoi(strtok_s(NULL,",", &tokenBuffer)) + atoi(strtok_s(NULL,",", &tokenBuffer)) * 32;
 		
 		// Link them
-		m_blocks[block1]->SetOutput(block2);
+		//m_blocks[block1]->SetOutput(block2);
 	}
 	file.close();
 }
