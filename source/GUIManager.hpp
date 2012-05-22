@@ -3,17 +3,17 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
-//#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/SFGUI.hpp>
 
 namespace sf
 {
 	class RenderTarget;
 };
-/*namespace sfg
+namespace sfg
 {
 	class SFGUI;
 	class Desktop;
-};*/
+};
 class WindowManager;
 
 class GUIManager
@@ -26,13 +26,13 @@ public:
 	sf::Vector2f GetWindowDim();
 	//
 	//void CreateTestWindow();
-	//void AddWidget(sfg::SharedPtr<sfg::Widget> a_Widget);
-	//sfg::Desktop& GetDesktop();
+	void AddWidget(sfg::SharedPtr<sfg::Widget> a_Widget);
+	sfg::Desktop& GetDesktop();
 	//
 private:
 	WindowManager& m_WindowMgr;
-	//sfg::SFGUI m_sfgui;
-	//sfg::Desktop m_Desktop;
+	sfg::SFGUI m_sfgui;
+	sfg::Desktop m_Desktop;
 	//
 };
 
