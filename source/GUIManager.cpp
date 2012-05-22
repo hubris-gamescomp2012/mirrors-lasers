@@ -1,26 +1,26 @@
 #include "GUIManager.hpp"
 #include "WindowManager.hpp"
 
-//#include <SFGUI/SFGUI.hpp>
-//#include <SFML/Graphics/Drawable.hpp>
-//#include <SFGUI/Desktop.hpp>
+#include <SFGUI/SFGUI.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFGUI/Desktop.hpp>
 
 GUIManager::GUIManager(WindowManager& a_WindowMgr)
-//:	m_sfgui()
-//,	m_Desktop()
-:	m_WindowMgr(a_WindowMgr)
+:	m_sfgui()
+,	m_Desktop()
+,	m_WindowMgr(a_WindowMgr)
 {
 	//
 }
 
 void GUIManager::Update(float a_Dt)
 {
-	//m_Desktop.Update(a_Dt);
+	m_Desktop.Update(a_Dt);
 }
 
 void GUIManager::RenderGui(sf::RenderWindow& a_RenderWindow)
 {
-	//m_sfgui.Display(a_RenderWindow);
+	m_sfgui.Display(a_RenderWindow);
 }
 
 /*void GUIManager::CreateTestWindow()
@@ -54,18 +54,18 @@ void GUIManager::RenderGui(sf::RenderWindow& a_RenderWindow)
 
 void GUIManager::HandleEvent(sf::Event a_Event)
 {
-	//m_Desktop.HandleEvent(a_Event);
+	m_Desktop.HandleEvent(a_Event);
 }
 
-/*void GUIManager::AddWidget(sfg::SharedPtr<sfg::Widget> a_Widget)
+void GUIManager::AddWidget(sfg::SharedPtr<sfg::Widget> a_Widget)
 {
 	m_Desktop.Add(a_Widget);
-}*/
+}
 
-/*sfg::Desktop& GUIManager::GetDesktop()
+sfg::Desktop& GUIManager::GetDesktop()
 {
 	return m_Desktop;
-}*/
+}
 
 sf::Vector2f GUIManager::GetWindowDim()
 {
