@@ -6,9 +6,12 @@
 class Player
 {
 public:
-	Player();
+	Player(cpSpace& a_Space);
+	~Player();
 	//
 private:
+	cpBody *m_pBody;
+	cpShape *m_pShape;
 	//
 };
 

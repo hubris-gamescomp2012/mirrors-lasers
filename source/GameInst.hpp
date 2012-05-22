@@ -12,8 +12,19 @@
 #include <SFGUI/Table.hpp>
 #include <SFGUI/Label.hpp>
 
+#include <chipmunk\chipmunk.h>
+
 class Block;
 class Renderer;
+class Player;
+
+struct StaticRigidQuad
+{
+	cpShape* Top;
+	cpShape* Left;
+	cpShape* Bottom;
+	cpShape* Right;
+};
 
 namespace sf {
 	class Sprite;
@@ -35,12 +46,16 @@ public:
 	void Select(void* a_pSelectee, SelectListener::Type a_SelectedType);
 	//
 private:
+	Player* m_pPlayer;
 	std::vector<Block*> m_blocks;
 	std::vector<SpriteID> m_laserSprites;
 	bool m_Running;
 	SelectListener* m_pSelectListener;
 	Renderer& m_Renderer;
-
+	//
+	cpSpace *m_pSpace;	//chipmunk physworld
+	StaticRigidQuad m_WorldBounds;	//world boundaries
+	//
 	int startX;
 	int startY;
 };
