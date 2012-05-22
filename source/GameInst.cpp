@@ -14,6 +14,7 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 ,	m_Running(false)
 ,	m_Renderer(a_Renderer)
 ,	m_pQuitMenuButton(sfg::Button::Create("Quit to Main Menu"))
+,	m_ResMgr(a_ResMgr)
 	//
 {
 	//grab the screen dimensions
@@ -21,32 +22,6 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 
 	//to handle button presses and the like
 	m_pSelectListener = new SelectListener(*this);
-	/** Create Adjustment.
-		* @param value Current value.
-		* @param lower Minimum value.
-		* @param upper Maximum value.
-		* @param minor_step Minor change value (such as clicking on arrow button).
-		* @param major_step Major change value (such as clicking on the scroll area).
-		* @param page_size Page size (how many entries are visible / slider size).
-		* @return Adjustment.
-		*/
-
-	//add a systemlist scrollbar
-	/*sfg::Scrollbar::Ptr systemScrollBar = sfg::Scrollbar::Create(sfg::Scale::VERTICAL);
-	m_pSystemList->Attach(systemScrollBar, sf::Rect<unsigned int>(1,1,1,1), 0, 0);
-	sfg::Adjustment::Ptr adjustment = systemScrollBar->GetAdjustment();
-	systemScrollBar->SetRequisition( sf::Vector2f( 0.f, windowDim.y/2 ) );
-
-	// Tune the adjustment parameters.
-	adjustment->SetLower( 20.f );
-	adjustment->SetUpper( 100.f );
-
-	// How much it should change when clicked on the stepper.
-	adjustment->SetMinorStep( 1.f );
-
-	// How much it should change when clicked on the trough.
-	adjustment->SetMajorStep( 5.f );*/
-
 	//setup gui
 	sf::FloatRect allocRect;
 	//double invHeightScalar = 10;
@@ -60,37 +35,63 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	m_pQuitMenuButton->Show(false);
 	m_GUIMgr.AddWidget(m_pQuitMenuButton);
 	Widgets.push_back(m_pQuitMenuButton);
+}
+
+bool GameInst::Start()
+{
+	m_Running = true;
+	
+	// Load the level
+	LoadLevel();
+
+	// Set up the laser sprites
+	for (int i = 0; i < 1000; ++i) {
+		SpriteID laser;
+		m_ResMgr.CreateSprite("media/laser.png", &laser);
+		m_laserSprites.push_back(laser);
+	}
+
+	// Add them to the draw list (has to be separate for some reason)
+	for (auto it = m_laserSprites.begin(); it != m_laserSprites.end(); ++it) {
+		m_Renderer.AddDrawableSprite(&(*it));
+	}
+
+	return true;
+}
+
+void GameInst::LoadLevel()
+{
+	sf::Vector2f windowDim = m_GUIMgr.GetWindowDim();
 
 	//-------------------------------------- chipmunk physics
 	// cpVect is a 2D vector and cpv() is a shortcut for initializing them.
-	cpVect gravity = cpv(0, -100);
+	cpVect gravity = cpv(0, 98);
   
-	// Create an empty space.
+	// Create a physworld
 	m_pSpace = cpSpaceNew();
 	cpSpaceSetGravity(m_pSpace, gravity);
   
-	// Add a static line segment shape for the ground.
-	// We'll make it slightly tilted so the ball will roll off.
-	// We attach it to space->staticBody to tell Chipmunk it shouldn't be movable.
-
 	//top
-	m_WorldBounds.Bottom = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, windowDim.y), cpv(windowDim.x, windowDim.y), 0);
-	cpShapeSetFriction(m_WorldBounds.Bottom, 1);
-	cpSpaceAddShape(m_pSpace, m_WorldBounds.Bottom);
+	m_WorldBounds.Top = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, cpFloat(windowDim.y)), cpv(cpFloat(windowDim.x), cpFloat(windowDim.y)), 0);
+	cpShapeSetFriction(m_WorldBounds.Top, 1);
+	cpSpaceAddShape(m_pSpace, m_WorldBounds.Top);
 	//bottom
-	m_WorldBounds.Bottom = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, 0), cpv(windowDim.x, 0), 0);
+	m_WorldBounds.Bottom = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, cpFloat(windowDim.y)), cpv(cpFloat(windowDim.x), cpFloat(windowDim.y)), 0);
 	cpShapeSetFriction(m_WorldBounds.Bottom, 1);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Bottom);
 	//left
-	m_WorldBounds.Bottom = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, 0), cpv(0, windowDim.y), 0);
-	cpShapeSetFriction(m_WorldBounds.Bottom, 1);
-	cpSpaceAddShape(m_pSpace, m_WorldBounds.Bottom);
+	m_WorldBounds.Left = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, cpFloat(windowDim.y)), cpv(cpFloat(windowDim.x), cpFloat(windowDim.y)), 0);
+	cpShapeSetFriction(m_WorldBounds.Left, 1);
+	cpSpaceAddShape(m_pSpace, m_WorldBounds.Left);
 	//right
-	m_WorldBounds.Bottom = cpSegmentShapeNew(m_pSpace->staticBody, cpv(windowDim.x, 0), cpv(windowDim.x, windowDim.y), 0);
-	cpShapeSetFriction(m_WorldBounds.Bottom, 1);
-	cpSpaceAddShape(m_pSpace, m_WorldBounds.Bottom);
+	m_WorldBounds.Right = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, cpFloat(windowDim.y)), cpv(cpFloat(windowDim.x), cpFloat(windowDim.y)), 0);
+	cpShapeSetFriction(m_WorldBounds.Right, 1);
+	cpSpaceAddShape(m_pSpace, m_WorldBounds.Right);
 
-	m_pPlayer = new Player(*m_pSpace);
+	//create player
+	m_pPlayer = new Player(m_ResMgr, *m_pSpace);
+	m_pPlayer->SetPosition(900, 600);
+	m_Renderer.AddDrawableSprite(m_pPlayer->GetSprite());
 
 	/*
 	// Now let's make a ball that falls onto the line and rolls off.
@@ -138,35 +139,12 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	cpShapeFree(ground);
 	cpSpaceFree(space);
 	*/
-}
 
-bool GameInst::Start()
-{
-	m_Running = true;
-	
-	// Load the level
-	LoadLevel();
-
-	// Set up the laser sprites
-	for (int i = 0; i < 1000; ++i) {
-		SpriteID laser;
-		m_ResMgr.CreateSprite("media/laser.png", &laser);
-		m_laserSprites.push_back(laser);
-	}
-
-	// Add them to the draw list (has to be separate for some reason)
-	for (auto it = m_laserSprites.begin(); it != m_laserSprites.end(); ++it) {
-		m_Renderer.AddDrawableSprite(&(*it));
-	}
-
-	return true;
-}
-
-void GameInst::LoadLevel()
-{
 	/*Block *block = new Block(m_ResMgr);
 	m_blocks.push_back(block);
 	m_Renderer.AddDrawableSprite(block->Sprite());*/
+
+	//load level data from file
 	std::fstream file;
 	file.open(("media/level1.txt"));
 	std::string line;
@@ -181,9 +159,9 @@ void GameInst::LoadLevel()
 			{
 			case('#'):
 				{
-					Block *block = new Block(m_ResMgr,Block::BLOCK_SOLID);
+					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_SOLID);
 					m_blocks.push_back(block);
-					block->GetSprite()->sprite->setPosition(float(i)*32,float(curLine)*32);
+					block->SetPosition(float(i)*32,float(curLine)*32);
 					m_Renderer.AddDrawableSprite(block->GetSprite());
 					break;
 				}
@@ -217,18 +195,29 @@ void GameInst::LoadLevel()
 	file.close();
 }
 
-void GameInst::UnloadLevel() {
+void GameInst::UnloadLevel()
+{
 	// Clear blocks
 	for (auto it = m_blocks.begin(); it != m_blocks.end();) {
 		it = m_blocks.erase(it);
 	}
 
 	// Clear laser sprites
-	for (auto it = m_laserSprites.begin();it != m_laserSprites.end();) {
+	for (auto it = m_laserSprites.begin();it != m_laserSprites.end();)
+	{
 		m_Renderer.RemoveDrawableSprite(&(*it));
 		m_ResMgr.DeleteSprite((*it).ID);
 		it = m_laserSprites.erase(it);
 	}
+
+	//clear physworld
+	cpShapeFree(m_WorldBounds.Top);
+	cpShapeFree(m_WorldBounds.Bottom);
+	cpShapeFree(m_WorldBounds.Left);
+	cpShapeFree(m_WorldBounds.Right);
+	cpSpaceFree(m_pSpace);
+
+	//clear player
 }
 
 void GameInst::Stop()
@@ -241,9 +230,30 @@ void GameInst::Update(float a_dt)
 {
 	if(m_Running)
 	{
+		//update physworld
+		cpSpaceStep(m_pSpace, a_dt);
+		/*
+		cpFloat timeStep = 1.0/60.0;
+		for(cpFloat time = 0; time < 2; time += timeStep)
+		{
+			cpVect pos = cpBodyGetPos(ballBody);
+			cpVect vel = cpBodyGetVel(ballBody);
+			printf(
+				"Time is %5.2f. ballBody is at (%5.2f, %5.2f). It's velocity is (%5.2f, %5.2f)\n",
+				time, pos.x, pos.y, vel.x, vel.y
+			);
+
+			cpSpaceStep(space, timeStep);
+		}
+		*/
+
+		//update player
+		m_pPlayer->Update(a_dt);
+
 		// Update block stuff
 		for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
 		{
+			(*it)->Update(a_dt);
 			//Check if a block is able to trigger.
 			if ((*it)->Type(Block::BLOCK_DOOR) || (*it)->Type(Block::BLOCK_BUTTON) || (*it)->Type(Block::BLOCK_END)) {
 				for (auto it2 = m_blocks.begin(); it2 != m_blocks.end();++it2) {
