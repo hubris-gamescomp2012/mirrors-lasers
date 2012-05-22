@@ -50,6 +50,6 @@ App::~App()
 
 bool App::CleanUp()
 {
-	//
+	delete m_pSceneMgr;
 	return true;
 }

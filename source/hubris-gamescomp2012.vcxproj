@@ -85,6 +85,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="GameInst.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="guicon.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="Helpers.cpp" />
@@ -105,6 +106,7 @@
     <ClInclude Include="Block.hpp" />
     <ClInclude Include="Defs.hpp" />
     <ClInclude Include="GameInst.hpp" />
+    <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="guicon.h" />
     <ClInclude Include="GUIManager.hpp" />
     <ClInclude Include="Helpers.hpp" />

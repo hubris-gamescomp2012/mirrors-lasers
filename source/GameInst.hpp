@@ -3,6 +3,7 @@
 
 #include "Scene.hpp"
 #include "SelectListener.hpp"
+#include "ResourceManager.hpp"
 #include <vector>
 
 #include <SFGUI/Button.hpp>
@@ -25,6 +26,10 @@ struct StaticRigidQuad
 	cpShape* Right;
 };
 
+namespace sf {
+	class Sprite;
+}
+
 class GameInst : public Scene
 {
 public:
@@ -43,12 +48,16 @@ public:
 private:
 	Player* m_pPlayer;
 	std::vector<Block*> m_blocks;
+	std::vector<SpriteID> m_laserSprites;
 	bool m_Running;
 	SelectListener* m_pSelectListener;
 	Renderer& m_Renderer;
 	//
 	cpSpace *m_pSpace;	//chipmunk physworld
 	StaticRigidQuad m_WorldBounds;	//world boundaries
+	//
+	int startX;
+	int startY;
 };
 
 #endif	//GAME_INST_HPP

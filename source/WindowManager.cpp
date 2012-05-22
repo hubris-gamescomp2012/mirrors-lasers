@@ -15,6 +15,7 @@ WindowManager::WindowManager()
 :	m_pSFMLRenderWindow(new RenderWindow())
 ,	m_IsQuittingNextUpdate(false)
 {
+
 	m_pSFMLRenderWindow->create(sf::VideoMode(1024,768),"Hubris Games, QGC 2012 - Mirrors and Lasers");
 	sf::Image Icon;
 	if (Icon.loadFromFile("media/icon[617x480].bmp") && m_pSFMLRenderWindow)
@@ -45,11 +46,6 @@ void WindowManager::PollEvents(GUIManager& a_GUIMgr)
 		/*case(Event::MouseButtonPressed):
 			{
 				Callback::MouseClick(curEvent.mouseButton);
-				break;
-			}
-		case(Event::KeyPressed):
-			{
-				Callback::KeyPress(curEvent.key);
 				break;
 			}*/
 		case(Event::Closed):
@@ -86,6 +82,10 @@ void WindowManager::CleanUp()
 {
 	m_pSFMLRenderWindow->close();
 	delete m_pSFMLRenderWindow;
+}
+
+WindowManager::~WindowManager() {
+	CleanUp();
 }
 
 sf::Vector2f WindowManager::GetWindowDim()
