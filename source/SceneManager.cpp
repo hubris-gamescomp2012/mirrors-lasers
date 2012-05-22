@@ -28,8 +28,12 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 {
 	//--------------- main menu ---------------//
 	m_pMainMenu = new MainMenu(m_GUIMgr, m_ResMgr, m_Renderer);
-	sf::Sprite* pBG = new sf::Sprite();
-	a_ResMgr.CreateSprite("media/menubackground[1920x1080].jpg", &pBG);
+
+	SpriteID spriteID;
+	a_ResMgr.CreateSprite("media/menubackground[1920x1080].jpg", &spriteID);
+	m_sprites.push_back(spriteID);
+
+	sf::Sprite* pBG = spriteID.sprite;
 	m_pMainMenu->SetBackground(pBG);
 	m_pMainMenu->m_pStartButton->OnLeftClick.Connect(&SceneManager::GotoGameScene, this);
 	m_pMainMenu->m_pOptionsButton->OnLeftClick.Connect(&SceneManager::GotoOptionsScene, this);
@@ -56,10 +60,15 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 
 	//--------------- application screen ---------------//
 	m_pGameInst = new GameInst(m_GUIMgr, m_ResMgr, m_Renderer);
-	pBG = new sf::Sprite();
-	a_ResMgr.CreateSprite("media/starry[1280x853].bmp", &pBG);
-	m_pGameInst->SetBackground(pBG);
+
+	SpriteID spriteID2;
+	a_ResMgr.CreateSprite("media/starry[1280x853].bmp", &spriteID2);
+	m_sprites.push_back(spriteID2);
+
+	pBG = spriteID2.sprite;
+	m_pGameInst->SetBackground(spriteID2.sprite);
 	m_pGameInst->m_pQuitMenuButton->OnLeftClick.Connect(&SceneManager::GotoMenuScene, this);
+
 	Scenes[SCENE_GAMEINST] = m_pGameInst;
 
 	//scale bg to fit the screen
@@ -78,7 +87,16 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 
 SceneManager::~SceneManager()
 {
-	//
+	// Clear background images
+	for (auto it = m_sprites.begin(); it != m_sprites.end();) {
+		m_ResMgr.DeleteSprite((*it).ID);
+		it = m_sprites.erase(it);
+	}
+
+	// Delete scenes
+	delete m_pGameInst;
+	delete m_pMainMenu;
+	delete m_pOptionsMenu;
 }
 
 bool SceneManager::EnableSceneByID(SCENE_TYPE a_SceneID)

@@ -52,7 +52,7 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	//double invWidthScalar = 5;
 	
 	//quit to menu button
-	//sfg::Context::Get().GetEngine().SetProperty("Button", "FontSize", 20.0f);
+	sfg::Context::Get().GetEngine().SetProperty("Button", "FontSize", 20.0f);
 	m_pQuitMenuButton->SetRequisition( sf::Vector2f(windowDim.x / 20, windowDim.y / 20) );
 	allocRect = m_pQuitMenuButton->GetAllocation();
 	m_pQuitMenuButton->SetPosition( sf::Vector2f(5, 5) );
@@ -64,7 +64,22 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 bool GameInst::Start()
 {
 	m_Running = true;
+	
+	// Load the level
 	LoadLevel();
+
+	// Set up the laser sprites
+	for (int i = 0; i < 1000; ++i) {
+		SpriteID laser;
+		m_ResMgr.CreateSprite("media/laser.png", &laser);
+		m_laserSprites.push_back(laser);
+	}
+
+	// Add them to the draw list (has to be separate for some reason)
+	for (auto it = m_laserSprites.begin(); it != m_laserSprites.end(); ++it) {
+		m_Renderer.AddDrawableSprite(&(*it));
+	}
+
 	return true;
 }
 
@@ -74,7 +89,7 @@ void GameInst::LoadLevel()
 	m_blocks.push_back(block);
 	m_Renderer.AddDrawableSprite(block->Sprite());*/
 	std::fstream file;
-	file.open(("media/level.txt"));
+	file.open(("media/level1.txt"));
 	std::string line;
 	int curLine = 0;
 	while( std::getline(file,line) )
@@ -87,10 +102,16 @@ void GameInst::LoadLevel()
 			{
 			case('#'):
 				{
-					Block *block = new Block(m_ResMgr);
+					Block *block = new Block(m_ResMgr,Block::BLOCK_SOLID);
 					m_blocks.push_back(block);
-					block->GetSprite()->setPosition(float(i)*32,float(curLine)*32);
+					block->GetSprite()->sprite->setPosition(float(i)*32,float(curLine)*32);
 					m_Renderer.AddDrawableSprite(block->GetSprite());
+					break;
+				}
+			case('>'):
+				{
+					startX = i * 32;
+					startY = curLine * 32 + 8;
 					break;
 				}
 			}
@@ -98,11 +119,36 @@ void GameInst::LoadLevel()
 		}
 		curLine++;
 	}
+	file.close();
+
+	file.open(("media/level1_binds.txt"));
+	while( std::getline(file,line) )
+	{//
+		char buffer[32];
+		char* tokenBuffer;
+		sprintf_s(buffer, 32, line.c_str());
+
+		// Get the block IDs to link them
+		int block1 = atoi(strtok_s(buffer,",", &tokenBuffer)) + atoi(strtok_s(NULL ,"=", &tokenBuffer)) * 32;
+		int block2 = atoi(strtok_s(NULL,",", &tokenBuffer)) + atoi(strtok_s(NULL,",", &tokenBuffer)) * 32;
+		
+		// Link them
+		m_blocks[block1]->SetOutput(block2);
+	}
+	file.close();
 }
 
 void GameInst::UnloadLevel() {
+	// Clear blocks
 	for (auto it = m_blocks.begin(); it != m_blocks.end();) {
 		it = m_blocks.erase(it);
+	}
+
+	// Clear laser sprites
+	for (auto it = m_laserSprites.begin();it != m_laserSprites.end();) {
+		m_Renderer.RemoveDrawableSprite(&(*it));
+		m_ResMgr.DeleteSprite((*it).ID);
+		it = m_laserSprites.erase(it);
 	}
 }
 
@@ -116,11 +162,60 @@ void GameInst::Update(float a_dt)
 {
 	if(m_Running)
 	{
+		// Update block stuff
 		for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
 		{
-			//m_Renderer->((*it)->Sprite());
+			//Check if a block is able to trigger.
+			if ((*it)->Type(Block::BLOCK_DOOR) || (*it)->Type(Block::BLOCK_BUTTON) || (*it)->Type(Block::BLOCK_END)) {
+				for (auto it2 = m_blocks.begin(); it2 != m_blocks.end();++it2) {
+					sf::Vector2f sourcePos = (*it)->GetSprite()->sprite->getPosition();
+					sf::Vector2f targetPos = (*it2)->GetSprite()->sprite->getPosition();
+					
+					// NOTE: Bounds are intentionally not matched with either tile size or bounding sizes to allow for fine tuning.
+					//       Current values should be optimal.
+					
+					// Activate door if player is mostly on the same tile
+					if ((*it)->Type(Block::BLOCK_DOOR) && (*it2)->Type(Block::BLOCK_PLAYER)) {
+						if (targetPos.x + 8 > sourcePos.x && targetPos.x - 8 < sourcePos.x && targetPos.y < sourcePos.y && targetPos.y + 32 > sourcePos.y) {
+							// Complete level
+							(*it2)->SetActivated(true);
+						}
+					}
+
+					// Press button if player is standing anywhere above the tile.
+					if ((*it)->Type(Block::BLOCK_BUTTON) && (*it2)->Type(Block::BLOCK_PLAYER)) {
+						if (targetPos.x + 63 > sourcePos.x && targetPos.x - 31 < sourcePos.x && targetPos.y < sourcePos.y && targetPos.y + 8 > sourcePos.y) {
+							// Press button
+							(*it)->SetActivated(true);
+						}
+					}
+
+					// if (BLOCK_END && LASER) activate door --- make the laser first!
+				}
+			}
+
+			// Check if a block has triggered.
+			if ((*it)->GetActivated()) {
+				int targetBlock = (*it)->GetOutput();
+
+				// If the block has an output, activate it.
+				if (targetBlock != -1) m_blocks[targetBlock]->SetActivated(true);
+
+				// Depress buttons
+				if ((*it)->Type(Block::BLOCK_BUTTON)) (*it)->SetActivated(false);
+			}
 		}
-		//
+	}
+
+	// Calculate and create new laser path
+	sf::Vector2f laserPos = sf::Vector2f((float)startX,(float)startY);
+	sf::Vector2f laserDir = sf::Vector2f(4.0f,0.0f);
+	unsigned int iter = 0;
+	while (laserPos.x >= 0 && laserPos.x <= 1024 && laserPos.y >= 0 && laserPos.y <= 768 && iter < m_laserSprites.size()) {
+		m_laserSprites[iter].sprite->setPosition(laserPos);
+		
+		laserPos += laserDir;
+		++iter;
 	}
 }
 

@@ -1,5 +1,11 @@
+// MEMORY LEAK DETECTION
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
 #include "Windows.h"
 
 #include <iostream>
@@ -62,6 +68,12 @@ int WINAPI WinMain(HINSTANCE a_hInst, HINSTANCE a_hPrevInst, LPSTR a_pCmdLine, i
 			break;
 		}
 	}
+
+	delete pResMgr;
+	delete pGUIMgr;
+	delete pWindowMgr;
+
+	//_CrtDumpMemoryLeaks();
 
 	return 0;
 }

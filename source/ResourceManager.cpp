@@ -46,7 +46,7 @@ bool ResourceManager::LoadSFMLTexture( std::string FilePath, sf::Texture** pOut 
 	return false;
 }
 
-bool ResourceManager::CreateSprite( std::string FilePath, sf::Sprite** a_ppOut )
+bool ResourceManager::CreateSprite( std::string FilePath, SpriteID* a_ppOut )
 {
 	short textureIndex = 0;
 	//check to see if the texture is already loaded
@@ -71,7 +71,7 @@ bool ResourceManager::CreateSprite( std::string FilePath, sf::Sprite** a_ppOut )
 		}
 	}
 	//if the code runs to here, then the texture wasn't loaded successfully
-	*a_ppOut = NULL;
+	a_ppOut = NULL;
 	return false;
 
 	create_sprite:
@@ -79,12 +79,19 @@ bool ResourceManager::CreateSprite( std::string FilePath, sf::Sprite** a_ppOut )
 	//sf::Texture* texture = new sf::Texture();
 	//texture->loadFromImage(*Images[imageIndex].second);
 	sf::Sprite* sprite = new sf::Sprite(*Textures[textureIndex].second);
-	Sprites.push_back( std::pair<std::string, sf::Sprite*>(FilePath, sprite) );
+	static int ID = 0;
+	++ID;
+
+	SpriteID spriteID;
+	spriteID.ID = ID;
+	spriteID.sprite = sprite;
+
+	Sprites.push_back( std::pair<std::string, SpriteID>(FilePath, spriteID) );
 	//if(a_pSubRect)
 	//	sprite->set(*a_pSubRect);
 	//sf::Vector2f size = texture->getSize();
 	if(a_ppOut)
-		*a_ppOut = sprite;
+		a_ppOut->sprite = sprite;
 
 	//now scale the sprite so that it matches the tile size
 	/*sf::Vector2f spriteSize = sprite->getSize();
@@ -99,6 +106,17 @@ bool ResourceManager::CreateSprite( std::string FilePath, sf::Sprite** a_ppOut )
 	sprite->SetCenter(size.x/2,size.y);*/
 
 	return true;
+}
+
+void ResourceManager::DeleteSprite(int a_spriteID) {
+	for (auto it = Sprites.begin(); it != Sprites.end();) {
+		if ((*it).second.ID == a_spriteID) {
+			delete (*it).second.sprite;
+			it = Sprites.erase(it);
+		} else {
+			++it;
+		}
+	}
 }
 
 /*
@@ -140,7 +158,24 @@ bool ResourceManager::CreateAnim(std::string FilePath, sf::Vector2f a_FrameSize,
 }
 */
 
-std::vector< std::pair<std::string, sf::Sprite*> > ResourceManager::GetSprites()
+std::vector< std::pair<std::string, SpriteID> > ResourceManager::GetSprites()
 {
 	return Sprites;
+}
+
+ResourceManager::~ResourceManager() {
+	for (auto it = Sprites.begin(); it != Sprites.end();) {
+		delete (*it).second.sprite;
+		it = Sprites.erase(it);
+	}
+
+	for (auto it = Textures.begin(); it != Textures.end();) {
+		delete (*it).second;
+		it = Textures.erase(it);
+	}
+
+	for (auto it = Images.begin(); it != Images.end();) {
+		delete (*it).second;
+		it = Images.erase(it);
+	}
 }
