@@ -52,9 +52,19 @@ void WindowManager::PollEvents(GUIManager& a_GUIMgr)
 				m_IsQuittingNextUpdate = true;
 				break;
 			}
+		case(Event::MouseEntered):
+			{
+				m_pSFMLRenderWindow->setMouseCursorVisible(false);
+				break;
+			}
+		case(Event::MouseLeft):
+			{
+				m_pSFMLRenderWindow->setMouseCursorVisible(true);
+				break;
+			}
 		case(Event::KeyPressed):
 			{	
-				if(curEvent.key.code = sf::Keyboard::Escape)
+				if(curEvent.key.code == sf::Keyboard::Escape)
 				{
 					m_IsQuittingNextUpdate = true;
 					break;
@@ -66,7 +76,9 @@ void WindowManager::PollEvents(GUIManager& a_GUIMgr)
 				//let our current input_handler deal with it
 				if(m_pInputHandler)
 					m_pInputHandler->HandleInputEvent(curEvent);
-				//a_GUIMgr.HandleEvent(curEvent);
+
+				//let the gui know about it too
+				a_GUIMgr.HandleEvent(curEvent);
 				break;
 			}
 		}

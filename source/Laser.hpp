@@ -1,15 +1,17 @@
-#ifndef LASER_H
-#define LASER_H
+#ifndef LASER_HPP
+#define LASER_HPP
 
+#include "GameObject.hpp"
 #include <vector>
 
-class Laser {
+class Laser : public GameObject
+{
 public:
-	Laser(ResourceManager& a_ResMgr);
-	void Blocks(std::vector<Block*> a_blocks);
+	Laser(ResourceManager& a_ResMgr, cpSpace& a_Space);
+	virtual void Update(float a_Dt);
+	//
 private:
-	std::vector<Block*> m_blocks;
-	sf::Sprite* m_pSprite;
+	//
 };
 
-#endif // LASER_H
+#endif // LASER_HPP

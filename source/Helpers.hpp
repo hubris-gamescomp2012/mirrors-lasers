@@ -2,6 +2,7 @@
 #define HELPERS_HPP
 
 #include <string>
+#include <SFML\System\Vector2.hpp>
 
 const char* GetRandomLetter(char** a_ppOut = NULL);
 
@@ -12,5 +13,7 @@ std::string Num2Str(double a_In);
 std::string Num2Str(float a_In);
 std::string Num2Str(int a_In);
 std::string Num2Str(short a_In);
+
+float GetDir(sf::Vector2f a_StartPos, sf::Vector2f a_EndPos);
 
 #endif	//HELPERS_HPP

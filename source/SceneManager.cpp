@@ -90,7 +90,8 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 SceneManager::~SceneManager()
 {
 	// Clear background images
-	for (auto it = m_sprites.begin(); it != m_sprites.end();) {
+	for (auto it = m_sprites.begin(); it != m_sprites.end();)
+	{
 		m_ResMgr.DeleteSprite((*it).ID);
 		it = m_sprites.erase(it);
 	}
@@ -106,12 +107,14 @@ bool SceneManager::EnableSceneByID(SCENE_TYPE a_SceneID)
 	if(m_CurScene)
 	{
 		Scenes[m_CurScene]->HideScene();
+		Scenes[m_CurScene]->SetInputHandler(NULL);
 	}
 	if(a_SceneID)
 	{
 		m_CurScene = a_SceneID;
 		m_Renderer.SetBackground(Scenes[m_CurScene]->GetBackground());
 		Scenes[m_CurScene]->ShowScene();
+		Scenes[m_CurScene]->SetInputHandler(m_pInputHandler);
 		return true;
 	}
 	return false;
