@@ -20,6 +20,9 @@ public:
 	void SetInputHandler(InputHandler* a_pInputHandler);
 	InputHandler* GetInputHandler();
 	//
+	void Hide();
+	void Show();
+	//
 	enum Type
 	{
 		INVALID = 0,

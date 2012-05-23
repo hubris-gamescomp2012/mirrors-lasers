@@ -15,6 +15,7 @@ namespace sfg
 	class Desktop;
 };
 class WindowManager;
+class Renderer;
 
 class GUIManager
 {
@@ -29,11 +30,14 @@ public:
 	void AddWidget(sfg::SharedPtr<sfg::Widget> a_Widget);
 	sfg::Desktop& GetDesktop();
 	//
+	void SetRenderer(Renderer* a_pRenderer);
+	//
 private:
 	WindowManager& m_WindowMgr;
 	sfg::SFGUI m_sfgui;
 	sfg::Desktop m_Desktop;
 	//
+	Renderer* m_pRenderer;
 };
 
 #endif	//GUI_MANAGER_HPP

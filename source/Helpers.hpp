@@ -14,6 +14,9 @@ std::string Num2Str(float a_In);
 std::string Num2Str(int a_In);
 std::string Num2Str(short a_In);
 
-float GetDir(sf::Vector2f a_StartPos, sf::Vector2f a_EndPos);
+float GetAngleFromDir(sf::Vector2f a_StartPos, sf::Vector2f a_EndPos);
+float GetAngleFromDir(sf::Vector2f a_Dir);
+
+float GetVectorMagnitude(sf::Vector2f a_Vec);
 
 #endif	//HELPERS_HPP

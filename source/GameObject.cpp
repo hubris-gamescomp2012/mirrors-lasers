@@ -1,8 +1,10 @@
 #include "GameObject.hpp"
-#include <SFML/Graphics.hpp>
-#include <iostream>
+#include "Renderer.hpp"
 
 #include "InputHandler.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <iostream>
 
 GameObject::GameObject(ResourceManager& a_ResMgr, cpSpace& a_Space)
 :	m_resMgr(a_ResMgr)
@@ -54,4 +56,14 @@ void GameObject::SetInputHandler(InputHandler* a_pInputHandler)
 InputHandler* GameObject::GetInputHandler()
 {
 	return m_pInputHandler;
+}
+
+void GameObject::Hide()
+{
+	m_resMgr.RemoveDrawableSprite(&m_Sprite);
+}
+
+void GameObject::Show()
+{
+	m_resMgr.AddDrawableSprite(&m_Sprite);
 }

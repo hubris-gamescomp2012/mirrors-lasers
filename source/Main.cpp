@@ -51,10 +51,12 @@ int WINAPI WinMain(HINSTANCE a_hInst, HINSTANCE a_hPrevInst, LPSTR a_pCmdLine, i
 	//
 	WindowManager* pWindowMgr = new WindowManager();
 	GUIManager* pGUIMgr = new GUIManager(*pWindowMgr);
-
+	
 	ResourceManager* pResMgr = new ResourceManager();
-	Renderer renderer(*pGUIMgr,*pWindowMgr, *pResMgr);
-	App app(*pWindowMgr,*pGUIMgr,renderer, *pResMgr);
+	Renderer renderer(*pGUIMgr, *pWindowMgr, *pResMgr);
+	pResMgr->SetRenderer(&renderer);
+	//
+	App app(*pWindowMgr, *pGUIMgr, renderer, *pResMgr);
 
 	//
 	sf::Clock deltaTimer;

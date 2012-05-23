@@ -9,6 +9,7 @@ GUIManager::GUIManager(WindowManager& a_WindowMgr)
 :	m_sfgui()
 ,	m_Desktop()
 ,	m_WindowMgr(a_WindowMgr)
+,	m_pRenderer(NULL)
 {
 	//
 }
@@ -70,4 +71,9 @@ sfg::Desktop& GUIManager::GetDesktop()
 sf::Vector2f GUIManager::GetWindowDim()
 {
 	return m_WindowMgr.GetWindowDim();
+}
+
+void GUIManager::SetRenderer(Renderer* a_pRenderer)
+{
+	m_pRenderer = a_pRenderer;
 }

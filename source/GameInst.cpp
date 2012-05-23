@@ -51,11 +51,11 @@ bool GameInst::Start()
 	LoadLevel();
 
 	// Set up the laser sprites
-	for (int i = 0; i < 1000; ++i) {
+	/*for (int i = 0; i < 1000; ++i) {
 		SpriteID laser;
 		m_ResMgr.CreateSprite("media/laser.png", &laser);
 		m_laserSprites.push_back(laser);
-	}
+	}*/
 
 	// Add them to the draw list (has to be separate for some reason)
 	for (auto it = m_laserSprites.begin(); it != m_laserSprites.end(); ++it) {
@@ -74,52 +74,39 @@ void GameInst::LoadLevel()
 
 	//-------------------------------------- chipmunk physics
 	// cpVect is a 2D vector and cpv() is a shortcut for initializing them.
-	cpVect gravity = cpv(0, 98);
+	cpVect gravity = cpv(0, 980);
   
 	// Create a physworld
 	m_pSpace = cpSpaceNew();
 	cpSpaceSetGravity(m_pSpace, gravity);
   
-	cpFloat offSet = 0;
+	cpFloat offSet = -16;
 	//top
 	m_WorldBounds.Top = cpSegmentShapeNew(m_pSpace->staticBody, cpv(offSet,offSet), cpv(cpFloat(windowDim.x)+offSet,offSet), 1);
 	cpShapeSetFriction(m_WorldBounds.Top, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Top);
+	cpShapeSetCollisionType(m_WorldBounds.Top, SURFACE_BOTTOM);
 	//bottom
 	m_WorldBounds.Bottom = cpSegmentShapeNew(m_pSpace->staticBody, cpv(offSet,cpFloat(windowDim.y)+offSet), cpv(cpFloat(windowDim.x)+offSet,cpFloat(windowDim.y)+offSet), 1);
 	cpShapeSetFriction(m_WorldBounds.Bottom, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Bottom);
-	cpShapeSetCollisionType(m_WorldBounds.Bottom, COLLIDABLE::BOUNDARY);
+	cpShapeSetCollisionType(m_WorldBounds.Bottom, SURFACE_TOP);
 	//left
 	m_WorldBounds.Left = cpSegmentShapeNew(m_pSpace->staticBody, cpv(offSet,offSet), cpv(offSet,cpFloat(windowDim.y)+offSet), 1);
 	cpShapeSetFriction(m_WorldBounds.Left, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Left);
+	cpShapeSetCollisionType(m_WorldBounds.Left, SURFACE_RIGHT);
 	//right
 	m_WorldBounds.Right = cpSegmentShapeNew(m_pSpace->staticBody, cpv(cpFloat(windowDim.x)+offSet,offSet), cpv(cpFloat(windowDim.x)+offSet,cpFloat(windowDim.y)+offSet), 1);
 	cpShapeSetFriction(m_WorldBounds.Right, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Right);
+	cpShapeSetCollisionType(m_WorldBounds.Right, SURFACE_LEFT);
 	
-	//player-boundary collision callback
-	cpSpaceAddCollisionHandler(
-	m_pSpace,
-	COLLIDABLE::PLAYER, COLLIDABLE::BOUNDARY,
-	cpCollisionBeginFunc(PlayerBoundaryCollision),
-	NULL,
-	NULL,
-	NULL,
-	NULL
-	);
-	
-	//player-block collision callback
-	cpSpaceAddCollisionHandler(
-	m_pSpace,
-	COLLIDABLE::PLAYER, COLLIDABLE::BLOCK,
-	cpCollisionBeginFunc(PlayerBlockCollision),
-	NULL,
-	NULL,
-	NULL,
-	NULL
-	);
+	//player-surface collision callbacks
+	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_TOP,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_BOTTOM,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_LEFT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_RIGHT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
 
 	//create player
 	m_pPlayer = new Player(m_ResMgr, *m_pSpace);
@@ -149,8 +136,15 @@ void GameInst::LoadLevel()
 				}
 			case('>'):
 				{
-					Emitters.push_back(new Emitter(m_ResMgr, *m_pSpace));
+					Emitters.push_back(new Emitter(m_ResMgr, *m_pSpace, sf::Vector2f(float(i * 32), float(curLine * 32)) ));
+					Emitters.back()->Show();
+					break;
+				}
+			case('<'):
+				{
+					/*Emitters.push_back(new Emitter(m_ResMgr, *m_pSpace));
 					Emitters.back()->SetPosition(i * 32, curLine * 32);
+					m_Renderer.AddDrawableSprite(Emitters.back()->GetSprite());*/
 					break;
 				}
 			}
@@ -229,6 +223,13 @@ void GameInst::Update(float a_dt)
 		//update player
 		m_pPlayer->Update(a_dt);
 
+		//update emitters (emitters update their own laser chains)
+		for (auto it = Emitters.begin(); it != Emitters.end();++it)
+		{
+			(*it)->Update(a_dt);
+			//
+		}
+		
 		// Update block stuff
 		for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
 		{

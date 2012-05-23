@@ -14,16 +14,17 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 {
 	MyType = GameObject::PLAYER;
 	//create a sprite
-	m_resMgr.CreateSprite("media/player.png", &m_Sprite);
+	m_resMgr.CreateSprite("media/player_body_64x64.png", &m_Sprite);
 
 	//create the physbody
-	cpFloat width = 32;
-	cpFloat height = 32;
+	cpFloat width = 64;
+	cpFloat height = 64;
+	cpFloat radius = 32;
 	cpFloat mass = 1;
 
 	// The moment of inertia is like mass for rotation
 	// Use the cpMomentFor*() functions to help you approximate it.
-	cpFloat moment = cpMomentForCircle(mass, 16.f, 0, cpv(0,0));
+	cpFloat moment = cpMomentForCircle(mass, radius, 0, cpv(0,0));
 
 	// The cpSpaceAdd*() functions return the thing that you are adding.
 	// It's convenient to create and add an object in one line.
@@ -34,7 +35,7 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 	// Now we create the collision shape for the ball.
 	// You can create multiple collision shapes that point to the same body.
 	// They will all be attached to the body and move around to follow it.
-	m_pShape = cpSpaceAddShape(&a_Space, cpCircleShapeNew(m_pBody, 16.f, cpv(0,0)));
+	m_pShape = cpSpaceAddShape(&a_Space, cpCircleShapeNew(m_pBody, radius, cpv(0,0)));
 	cpShapeSetFriction(m_pShape, 0.7);
 	m_pShape->data = this;
 
@@ -70,7 +71,7 @@ void Player::Update(float a_Dt)
 		{
 			if(m_OnGround)
 			{
-				cpBodyApplyImpulse(m_pBody, cpv(0,-200), cpv(0,0));
+				cpBodyApplyImpulse(m_pBody, cpv(0,-400), cpv(0,0));
 				m_OnGround = false;
 			}
 		}

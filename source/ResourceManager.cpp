@@ -1,4 +1,5 @@
 #include "ResourceManager.hpp"
+#include "Renderer.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp>
@@ -93,7 +94,7 @@ bool ResourceManager::CreateSprite( std::string FilePath, SpriteID* a_ppOut )
 	if(a_ppOut)
 		a_ppOut->sprite = sprite;
 	
-	sprite->setOrigin(16,16);
+	//sprite->setOrigin(16,16);
 
 	//now scale the sprite so that it matches the tile size
 	/*sf::Vector2f spriteSize = sprite->getSize();
@@ -180,4 +181,21 @@ ResourceManager::~ResourceManager() {
 		delete (*it).second;
 		it = Images.erase(it);
 	}
+}
+
+void ResourceManager::AddDrawableSprite(SpriteID* a_pSprite)
+{
+	if(m_pRenderer)
+		m_pRenderer->AddDrawableSprite(a_pSprite);
+}
+
+void ResourceManager::RemoveDrawableSprite(SpriteID* a_pSprite)
+{
+	if(m_pRenderer)
+		m_pRenderer->RemoveDrawableSprite(a_pSprite);
+}
+
+void ResourceManager::SetRenderer(Renderer* a_pRenderer)
+{
+	m_pRenderer = a_pRenderer;
 }

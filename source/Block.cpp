@@ -16,22 +16,27 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 	// Set sprite based on type
 	switch(m_blockType) {
 		case BLOCK_SOLID:
-			m_resMgr.CreateSprite("media/block.png", &m_Sprite);
+			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
 			break;
 		case BLOCK_GLASS:
 			//
+			m_resMgr.CreateSprite("media/block_glass_32x32.png", &m_Sprite);
 			break;
 		case BLOCK_DOOR:
 			//
+			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
 			break;
 		case BLOCK_PLAYER:
 			//
+			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
 			break;
 		case BLOCK_START:
 			//
+			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
 			break;
 		case BLOCK_END:
 			//
+			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
 			break;
 		default:
 			std::cout << "invalid block type!\n";
@@ -94,30 +99,30 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 	//cpShapeSetFriction(m_pShape, 0.7);
 	//m_pShape->data = this;
 	//
-
+	
+	float offSet = 32;
 	//top
-	float offSet = 0;
-	m_BoxBounds.Top = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x-offSet,a_Pos.y-offSet), cpv(a_Pos.x+offSet,a_Pos.y-offSet), 1);
-	m_BoxBounds.Top->collision_type = COLLIDABLE::BLOCK;
+	m_BoxBounds.Top = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x-offSet, a_Pos.y-offSet), cpv(a_Pos.x, a_Pos.y-offSet), 1);
+	m_BoxBounds.Top->collision_type = SURFACE_TOP;
 	m_BoxBounds.Top->data = this;
 	cpShapeSetFriction(m_BoxBounds.Top, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Top);
 	//bottom
-	m_BoxBounds.Bottom = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x+offSet,a_Pos.y-offSet), cpv(a_Pos.x+offSet,a_Pos.y+offSet), 1);
-	/*m_BoxBounds.Bottom->collision_type = COLLIDABLE::PLAYER;
-	m_BoxBounds.Bottom->data = this;*/
+	m_BoxBounds.Bottom = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x-offSet, a_Pos.y), cpv(a_Pos.x, a_Pos.y), 1);
+	m_BoxBounds.Bottom->collision_type = SURFACE_BOTTOM;
+	m_BoxBounds.Bottom->data = this;
 	cpShapeSetFriction(m_BoxBounds.Bottom, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Bottom);
 	//left
-	m_BoxBounds.Left = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x+offSet,a_Pos.y+offSet), cpv(a_Pos.x-offSet,a_Pos.y+offSet), 1);
-	//m_BoxBounds.Left->collision_type = COLLIDABLE::BLOCK;
-	//m_BoxBounds.Left->data = this;
+	m_BoxBounds.Left = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x-offSet, a_Pos.y), cpv(a_Pos.x-offSet, a_Pos.y-offSet), 1);
+	m_BoxBounds.Left->collision_type = SURFACE_LEFT;
+	m_BoxBounds.Left->data = this;
 	cpShapeSetFriction(m_BoxBounds.Left, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Left);
 	//right
-	m_BoxBounds.Right = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x-offSet,a_Pos.y+offSet), cpv(a_Pos.x-offSet,a_Pos.y-offSet), 1);
-	//m_BoxBounds.Right->collision_type = COLLIDABLE::BLOCK;
-	//m_BoxBounds.Right->data = this;
+	m_BoxBounds.Right = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y-offSet), cpv(a_Pos.x, a_Pos.y), 1);
+	m_BoxBounds.Right->collision_type = SURFACE_RIGHT;
+	m_BoxBounds.Right->data = this;
 	cpShapeSetFriction(m_BoxBounds.Right, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Right);
 
