@@ -1,15 +1,36 @@
-#ifndef LASER_H
-#define LASER_H
+#ifndef LASER_HPP
+#define LASER_HPP
 
+#include "GameObject.hpp"
 #include <vector>
 
-class Laser {
+#define LASER_VELOCITY 1000.f
+#define MAX_LASER_DIST 2000.f
+
+class Laser : public GameObject
+{
 public:
-	Laser(ResourceManager& a_ResMgr);
-	void Blocks(std::vector<Block*> a_blocks);
+	Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPos);
+	~Laser();
+	virtual void Update(float a_Dt);
+	//
+	Laser* GetNextSegment();
+	Laser* GetPreviousSegment();
+	//
+	void Bounce();
+	//
+	sf::Vector2f FacingDir;
 private:
-	std::vector<Block*> m_blocks;
-	sf::Sprite* m_pSprite;
+	sf::Vector2f m_StartPos;
+	sf::Vector2f m_EndPos;
+	float m_CurLength;
+	float m_MaxLength;
+	//
+	Laser* m_pPreviousSegment;
+	Laser* m_pNextChainSegment;
+	//
+	cpSpace& m_Space;
+	//
 };
 
-#endif // LASER_H
+#endif // LASER_HPP

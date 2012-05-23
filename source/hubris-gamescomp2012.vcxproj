@@ -84,12 +84,15 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Cursor.cpp" />
+    <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="GameInst.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="guicon.cpp" />
     <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="Laser.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="OptionsMenu.cpp" />
@@ -104,13 +107,17 @@
   <ItemGroup>
     <ClInclude Include="App.hpp" />
     <ClInclude Include="Block.hpp" />
+    <ClInclude Include="Cursor.hpp" />
     <ClInclude Include="Defs.hpp" />
+    <ClInclude Include="Emitter.hpp" />
     <ClInclude Include="GameInst.hpp" />
+    <ClInclude Include="GameInst_callbacks.hpp" />
     <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="guicon.h" />
     <ClInclude Include="GUIManager.hpp" />
     <ClInclude Include="Helpers.hpp" />
     <ClInclude Include="InputHandler.hpp" />
+    <ClInclude Include="Laser.hpp" />
     <ClInclude Include="MainMenu.hpp" />
     <ClInclude Include="OptionsMenu.hpp" />
     <ClInclude Include="Player.hpp" />

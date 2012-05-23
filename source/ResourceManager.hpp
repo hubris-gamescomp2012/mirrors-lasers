@@ -19,6 +19,7 @@ struct SpriteID {
 };
 
 class Anim;
+class Renderer;
 
 class ResourceManager
 {
@@ -34,11 +35,17 @@ public:
 	//
 	std::vector< std::pair<std::string, SpriteID> > GetSprites();
 	//
+	void AddDrawableSprite(SpriteID* a_pSprite);
+	void RemoveDrawableSprite(SpriteID* a_pSprite);
+	//
+	void SetRenderer(Renderer* a_pRenderer);
+	//
 private:
 	std::vector< std::pair<std::string, sf::Image*> > Images;
 	std::vector< std::pair<std::string, sf::Texture*> > Textures;
 	std::vector< std::pair<std::string, SpriteID> > Sprites;
 	//
+	Renderer* m_pRenderer;
 };
 
 #endif	//RESOURCE_MANAGER_HPP
