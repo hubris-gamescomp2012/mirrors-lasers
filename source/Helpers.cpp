@@ -186,3 +186,26 @@ std::string Num2Str(short a_In)
 	return out.str();
 }
 
+float GetAngleFromDir(sf::Vector2f a_StartPos, sf::Vector2f a_EndPos)
+{
+	sf::Vector2f diff = a_StartPos - a_EndPos;
+	diff /= sqrtf(diff.x * diff.x + diff.y * diff.y);
+
+	float rad = atan2f(diff.y, diff.x);
+
+	rad += 3.14159f * 0.5f;
+
+	return rad;
+}
+
+float GetAngleFromDir(sf::Vector2f a_Dir)
+{
+	float rad = 0;
+	//
+	return rad;
+}
+
+float GetVectorMagnitude(sf::Vector2f a_Vec)
+{
+	return sqrtf(a_Vec.x * a_Vec.x + a_Vec.y * a_Vec.y);
+}

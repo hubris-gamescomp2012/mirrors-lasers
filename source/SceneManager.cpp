@@ -32,7 +32,7 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 	m_pMainMenu = new MainMenu(m_GUIMgr, m_ResMgr, m_Renderer);
 
 	SpriteID spriteID;
-	a_ResMgr.CreateSprite("media/menubackground[1920x1080].jpg", &spriteID);
+	a_ResMgr.CreateSprite("media/titlescreen.png", &spriteID);
 	m_sprites.push_back(spriteID);
 
 	sf::Sprite* pBG = spriteID.sprite;
@@ -64,7 +64,7 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 	m_pGameInst = new GameInst(m_GUIMgr, m_ResMgr, m_Renderer);
 
 	SpriteID spriteID2;
-	a_ResMgr.CreateSprite("media/starry[1280x853].bmp", &spriteID2);
+	a_ResMgr.CreateSprite("media/bg_placeholder.png", &spriteID2);
 	m_sprites.push_back(spriteID2);
 
 	pBG = spriteID2.sprite;
@@ -90,7 +90,8 @@ SceneManager::SceneManager(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Rend
 SceneManager::~SceneManager()
 {
 	// Clear background images
-	for (auto it = m_sprites.begin(); it != m_sprites.end();) {
+	for (auto it = m_sprites.begin(); it != m_sprites.end();)
+	{
 		m_ResMgr.DeleteSprite((*it).ID);
 		it = m_sprites.erase(it);
 	}
@@ -106,12 +107,14 @@ bool SceneManager::EnableSceneByID(SCENE_TYPE a_SceneID)
 	if(m_CurScene)
 	{
 		Scenes[m_CurScene]->HideScene();
+		Scenes[m_CurScene]->SetInputHandler(NULL);
 	}
 	if(a_SceneID)
 	{
 		m_CurScene = a_SceneID;
 		m_Renderer.SetBackground(Scenes[m_CurScene]->GetBackground());
 		Scenes[m_CurScene]->ShowScene();
+		Scenes[m_CurScene]->SetInputHandler(m_pInputHandler);
 		return true;
 	}
 	return false;

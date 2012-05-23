@@ -4,10 +4,16 @@
 #include "block.hpp"
 #include "Renderer.hpp"
 #include "Player.hpp"
+#include "Emitter.hpp"
+
+#include "Defs.hpp"
+#include "GameInst_callbacks.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <fstream>
+
+#define PHYS_UPDATE_INTERVAL 1.f/120.f
 
 GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Renderer)
 :	Scene(a_GUIMgr, a_ResMgr, a_Renderer)
@@ -16,6 +22,7 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 ,	m_pQuitMenuButton(sfg::Button::Create("Quit to Main Menu"))
 ,	laserRotation(2.5f)
 ,	m_ResMgr(a_ResMgr)
+,	m_tLeftPhysUpdate(PHYS_UPDATE_INTERVAL)
 	//
 {
 	//grab the screen dimensions
@@ -27,7 +34,7 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	//double invWidthScalar = 5;
 	
 	//quit to menu button
-	sfg::Context::Get().GetEngine().SetProperty("Button", "FontSize", 20.0f);
+	//sfg::Context::Get().GetEngine().SetProperty("Button", "FontSize", 20.0f);
 	m_pQuitMenuButton->SetRequisition( sf::Vector2f(windowDim.x / 20, windowDim.y / 20) );
 	allocRect = m_pQuitMenuButton->GetAllocation();
 	m_pQuitMenuButton->SetPosition( sf::Vector2f(5, 5) );
@@ -44,16 +51,19 @@ bool GameInst::Start()
 	LoadLevel();
 
 	// Set up the laser sprites
-	for (int i = 0; i < 1000; ++i) {
+	/*for (int i = 0; i < 1000; ++i) {
 		SpriteID laser;
 		m_ResMgr.CreateSprite("media/laser.png", &laser);
 		m_laserSprites.push_back(laser);
-	}
+	}*/
 
 	// Add them to the draw list (has to be separate for some reason)
 	for (auto it = m_laserSprites.begin(); it != m_laserSprites.end(); ++it) {
 		m_Renderer.AddDrawableSprite(&(*it));
 	}
+
+	//enable user input to the player
+	m_pPlayer->SetInputHandler(m_pInputHandler);
 
 	return true;
 }
@@ -64,84 +74,44 @@ void GameInst::LoadLevel()
 
 	//-------------------------------------- chipmunk physics
 	// cpVect is a 2D vector and cpv() is a shortcut for initializing them.
-	cpVect gravity = cpv(0, 98);
+	cpVect gravity = cpv(0, 980);
   
 	// Create a physworld
 	m_pSpace = cpSpaceNew();
 	cpSpaceSetGravity(m_pSpace, gravity);
   
+	cpFloat offSet = -16;
 	//top
-	m_WorldBounds.Top = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, cpFloat(windowDim.y)), cpv(cpFloat(windowDim.x), cpFloat(windowDim.y)), 0);
-	cpShapeSetFriction(m_WorldBounds.Top, 1);
+	m_WorldBounds.Top = cpSegmentShapeNew(m_pSpace->staticBody, cpv(offSet,offSet), cpv(cpFloat(windowDim.x)+offSet,offSet), 1);
+	cpShapeSetFriction(m_WorldBounds.Top, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Top);
+	cpShapeSetCollisionType(m_WorldBounds.Top, SURFACE_BOTTOM);
 	//bottom
-	m_WorldBounds.Bottom = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, cpFloat(windowDim.y)), cpv(cpFloat(windowDim.x), cpFloat(windowDim.y)), 0);
-	cpShapeSetFriction(m_WorldBounds.Bottom, 1);
+	m_WorldBounds.Bottom = cpSegmentShapeNew(m_pSpace->staticBody, cpv(offSet,cpFloat(windowDim.y)+offSet), cpv(cpFloat(windowDim.x)+offSet,cpFloat(windowDim.y)+offSet), 1);
+	cpShapeSetFriction(m_WorldBounds.Bottom, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Bottom);
+	cpShapeSetCollisionType(m_WorldBounds.Bottom, SURFACE_TOP);
 	//left
-	m_WorldBounds.Left = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, cpFloat(windowDim.y)), cpv(cpFloat(windowDim.x), cpFloat(windowDim.y)), 0);
-	cpShapeSetFriction(m_WorldBounds.Left, 1);
+	m_WorldBounds.Left = cpSegmentShapeNew(m_pSpace->staticBody, cpv(offSet,offSet), cpv(offSet,cpFloat(windowDim.y)+offSet), 1);
+	cpShapeSetFriction(m_WorldBounds.Left, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Left);
+	cpShapeSetCollisionType(m_WorldBounds.Left, SURFACE_RIGHT);
 	//right
-	m_WorldBounds.Right = cpSegmentShapeNew(m_pSpace->staticBody, cpv(0, cpFloat(windowDim.y)), cpv(cpFloat(windowDim.x), cpFloat(windowDim.y)), 0);
-	cpShapeSetFriction(m_WorldBounds.Right, 1);
+	m_WorldBounds.Right = cpSegmentShapeNew(m_pSpace->staticBody, cpv(cpFloat(windowDim.x)+offSet,offSet), cpv(cpFloat(windowDim.x)+offSet,cpFloat(windowDim.y)+offSet), 1);
+	cpShapeSetFriction(m_WorldBounds.Right, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Right);
+	cpShapeSetCollisionType(m_WorldBounds.Right, SURFACE_LEFT);
+	
+	//player-surface collision callbacks
+	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_TOP,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_BOTTOM,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_LEFT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_RIGHT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
 
 	//create player
 	m_pPlayer = new Player(m_ResMgr, *m_pSpace);
 	m_pPlayer->SetPosition(900, 600);
 	m_Renderer.AddDrawableSprite(m_pPlayer->GetSprite());
-
-	/*
-	// Now let's make a ball that falls onto the line and rolls off.
-	// First we need to make a cpBody to hold the physical properties of the object.
-	// These include the mass, position, velocity, angle, etc. of the object.
-	// Then we attach collision shapes to the cpBody to give it a size and shape.
-
-	cpFloat radius = 5;
-	cpFloat mass = 1;
-
-	// The moment of inertia is like mass for rotation
-	// Use the cpMomentFor*() functions to help you approximate it.
-	cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
-
-	// The cpSpaceAdd*() functions return the thing that you are adding.
-	// It's convenient to create and add an object in one line.
-	cpBody *ballBody = cpSpaceAddBody(space, cpBodyNew(mass, moment));
-	cpBodySetPos(ballBody, cpv(0, 15));
-
-	// Now we create the collision shape for the ball.
-	// You can create multiple collision shapes that point to the same body.
-	// They will all be attached to the body and move around to follow it.
-	cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
-	cpShapeSetFriction(ballShape, 0.7);
-  
-	// Now that it's all set up, we simulate all the objects in the space by
-	// stepping forward through time in small increments called steps.
-	// It is *highly* recommended to use a fixed size time step.
-	cpFloat timeStep = 1.0/60.0;
-	for(cpFloat time = 0; time < 2; time += timeStep)
-	{
-		cpVect pos = cpBodyGetPos(ballBody);
-		cpVect vel = cpBodyGetVel(ballBody);
-		printf(
-			"Time is %5.2f. ballBody is at (%5.2f, %5.2f). It's velocity is (%5.2f, %5.2f)\n",
-			time, pos.x, pos.y, vel.x, vel.y
-		);
-
-		cpSpaceStep(space, timeStep);
-	}
-
-	// Clean up our objects and exit!
-	cpShapeFree(ballShape);
-	cpBodyFree(ballBody);
-	cpShapeFree(ground);
-	cpSpaceFree(space);
-	*/
-
-	/*Block *block = new Block(m_ResMgr);
-	m_blocks.push_back(block);
-	m_Renderer.AddDrawableSprite(block->Sprite());*/
 
 	//load level data from file
 	std::fstream file;
@@ -158,16 +128,23 @@ void GameInst::LoadLevel()
 			{
 			case('#'):
 				{
-					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_SOLID);
+					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_SOLID, sf::Vector2f(float(i)*32,float(curLine)*32) );
 					m_blocks.push_back(block);
-					block->SetPosition(float(i)*32,float(curLine)*32);
+					//block->SetPosition();
 					m_Renderer.AddDrawableSprite(block->GetSprite());
 					break;
 				}
 			case('>'):
 				{
-					startX = i * 32;
-					startY = curLine * 32 + 8;
+					Emitters.push_back(new Emitter(m_ResMgr, *m_pSpace, sf::Vector2f(float(i * 32), float(curLine * 32)) ));
+					Emitters.back()->Show();
+					break;
+				}
+			case('<'):
+				{
+					/*Emitters.push_back(new Emitter(m_ResMgr, *m_pSpace));
+					Emitters.back()->SetPosition(i * 32, curLine * 32);
+					m_Renderer.AddDrawableSprite(Emitters.back()->GetSprite());*/
 					break;
 				}
 			}
@@ -192,6 +169,9 @@ void GameInst::LoadLevel()
 		//m_blocks[block1]->SetOutput(block2);
 	}
 	file.close();
+
+	//rebuild static level geometry
+	//cpSpaceRehashStatic();
 }
 
 void GameInst::UnloadLevel()
@@ -223,6 +203,9 @@ void GameInst::Stop()
 {
 	m_Running = false;
 	UnloadLevel();
+	
+	//disable user input to the player
+	m_pPlayer->SetInputHandler(NULL);
 }
 
 void GameInst::Update(float a_dt)
@@ -230,30 +213,29 @@ void GameInst::Update(float a_dt)
 	if(m_Running)
 	{
 		//update physworld
-		cpSpaceStep(m_pSpace, a_dt);
-		/*
-		cpFloat timeStep = 1.0/60.0;
-		for(cpFloat time = 0; time < 2; time += timeStep)
+		/*m_tLeftPhysUpdate -= a_dt;
+		if(m_tLeftPhysUpdate < 0)
 		{
-			cpVect pos = cpBodyGetPos(ballBody);
-			cpVect vel = cpBodyGetVel(ballBody);
-			printf(
-				"Time is %5.2f. ballBody is at (%5.2f, %5.2f). It's velocity is (%5.2f, %5.2f)\n",
-				time, pos.x, pos.y, vel.x, vel.y
-			);
-
-			cpSpaceStep(space, timeStep);
-		}
-		*/
+			m_tLeftPhysUpdate = PHYS_UPDATE_INTERVAL;
+		}*/
+		cpSpaceStep(m_pSpace, a_dt);
 
 		//update player
 		m_pPlayer->Update(a_dt);
 
+		//update emitters (emitters update their own laser chains)
+		for (auto it = Emitters.begin(); it != Emitters.end();++it)
+		{
+			(*it)->Update(a_dt);
+			//
+		}
+		
 		// Update block stuff
 		for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
 		{
 			(*it)->Update(a_dt);
 			//Check if a block is able to trigger.
+			/*
 			if ((*it)->Type(Block::BLOCK_DOOR) || (*it)->Type(Block::BLOCK_BUTTON) || (*it)->Type(Block::BLOCK_END)) {
 				for (auto it2 = m_blocks.begin(); it2 != m_blocks.end();++it2) {
 					sf::Vector2f sourcePos = (*it)->GetSprite()->sprite->getPosition();
@@ -281,6 +263,7 @@ void GameInst::Update(float a_dt)
 					// if (BLOCK_END && LASER) activate door --- make the laser first!
 				}
 			}
+			*/
 
 			// Check if a block has triggered.
 			if ((*it)->GetActivated()) {
@@ -293,43 +276,45 @@ void GameInst::Update(float a_dt)
 				if ((*it)->Type(Block::BLOCK_BUTTON)) (*it)->SetActivated(false);
 			}
 		}
-	}
 
-	// Calculate and create new laser path
-	sf::Vector2f laserPos = sf::Vector2f((float)startX,(float)startY);
-	sf::Vector2f laserDir = sf::Vector2f(1.0f,0.0f);
-	unsigned int iter = 0;
-	while (laserPos.x >= 0 && laserPos.x <= 1024 && laserPos.y >= 0 && laserPos.y <= 768 && iter < m_laserSprites.size()) {
-		// Check to see if the laser has hit anything.
-		for (auto it = m_blocks.begin(); it != m_blocks.end();++it) {
-			sf::Vector2f pos = (*it)->GetSprite()->sprite->getPosition();
-			if (pos.x + 48 > laserPos.x + 16 && pos.x < laserPos.x + 16 && pos.y + 48 > laserPos.y + 16 && pos.y < laserPos.y + 16) {
+		/*
+		// Calculate and create new laser path
+		sf::Vector2f laserPos = sf::Vector2f((float)startX,(float)startY);
+		sf::Vector2f laserDir = sf::Vector2f(1.0f,0.0f);
+		unsigned int iter = 0;
+		while (laserPos.x >= 0 && laserPos.x <= 1024 && laserPos.y >= 0 && laserPos.y <= 768 && iter < m_laserSprites.size()) {
+			// Check to see if the laser has hit anything.
+			for (auto it = m_blocks.begin(); it != m_blocks.end();++it) {
+				sf::Vector2f pos = (*it)->GetSprite()->sprite->getPosition();
+				if (pos.x + 48 > laserPos.x + 16 && pos.x < laserPos.x + 16 && pos.y + 48 > laserPos.y + 16 && pos.y < laserPos.y + 16) {
 
-				// Rotate the laser
-				float cs = cos(laserRotation);
-				float sn = sin(laserRotation);
-				laserDir.x = cs * laserDir.x - sn * laserDir.y;
-				laserDir.y = sn * laserDir.x + cs * laserDir.y;
+					// Rotate the laser
+					float cs = cos(laserRotation);
+					float sn = sin(laserRotation);
+					laserDir.x = cs * laserDir.x - sn * laserDir.y;
+					laserDir.y = sn * laserDir.x + cs * laserDir.y;
 
-				// Normalise the new direction
-				float length = sqrtf((laserDir.x*laserDir.x) + (laserDir.y*laserDir.y));
-				laserDir.x = laserDir.x / length;
-				laserDir.y = laserDir.y / length;
+					// Normalise the new direction
+					float length = sqrtf((laserDir.x*laserDir.x) + (laserDir.y*laserDir.y));
+					laserDir.x = laserDir.x / length;
+					laserDir.y = laserDir.y / length;
 
-				laserPos.x += laserDir.x * 4;
-				laserPos.y += laserDir.y * 4;
+					laserPos.x += laserDir.x * 4;
+					laserPos.y += laserDir.y * 4;
 
-				//std::cout << "X: " << laserDir.x << "Y: " << laserDir.y << "\n";
-				break; // don't collide with multiple blocks at once
+					//std::cout << "X: " << laserDir.x << "Y: " << laserDir.y << "\n";
+					break; // don't collide with multiple blocks at once
+				}
 			}
+
+			laserPos.x += laserDir.x * 4;
+			laserPos.y += laserDir.y * 4;
+
+			m_laserSprites[iter].sprite->setPosition(laserPos);
+
+			++iter;
 		}
-
-		laserPos.x += laserDir.x * 4;
-		laserPos.y += laserDir.y * 4;
-
-		m_laserSprites[iter].sprite->setPosition(laserPos);
-
-		++iter;
+		*/
 	}
 }
 

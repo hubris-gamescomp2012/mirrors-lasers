@@ -9,7 +9,12 @@ public:
 	Player(ResourceManager& a_ResMgr, cpSpace& a_Space);
 	virtual void Update(float a_Dt);
 	//
+	float GetRedirectAngle();
+	void SetOnGround();
+	//
 private:
+	bool m_OnGround;
+	float RedirectAngle;
 	//
 };
 

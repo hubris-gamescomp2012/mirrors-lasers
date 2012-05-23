@@ -3,6 +3,9 @@
 
 #include "Scene.hpp"
 #include "ResourceManager.hpp"
+
+#include "Defs.hpp"
+
 #include <vector>
 
 #include <SFGUI/Button.hpp>
@@ -16,14 +19,9 @@
 class Block;
 class Renderer;
 class Player;
-
-struct StaticRigidQuad
-{
-	cpShape* Top;
-	cpShape* Left;
-	cpShape* Bottom;
-	cpShape* Right;
-};
+class Cursor;
+class Emitter;
+class GameObject;
 
 namespace sf {
 	class Sprite;
@@ -49,9 +47,12 @@ private:
 	Player* m_pPlayer;
 	std::vector<Block*> m_blocks;
 	std::vector<SpriteID> m_laserSprites;
+	std::vector<Emitter*> Emitters;
 	bool m_Running;
 	Renderer& m_Renderer;
 	ResourceManager& m_ResMgr;
+	//
+	float m_tLeftPhysUpdate;
 	//
 	cpSpace* m_pSpace;	//chipmunk physworld
 	StaticRigidQuad m_WorldBounds;	//world boundaries
