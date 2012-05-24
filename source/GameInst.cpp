@@ -96,11 +96,6 @@ void GameInst::LoadLevel()
 	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_LEFT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
 	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_RIGHT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
 
-	//create player
-	m_pPlayer = new Player(m_ResMgr, *m_pSpace);
-	m_pPlayer->SetPosition(900, 600);
-	m_Renderer.AddDrawableSprite(m_pPlayer->GetSprite());
-
 	//load level data from file
 	std::fstream file;
 	file.open(("media/level1.txt"));
@@ -114,6 +109,14 @@ void GameInst::LoadLevel()
 			char c = line[i];
 			switch(c)
 			{
+			case('p'):
+				{
+					//create player
+					m_pPlayer = new Player(m_ResMgr, *m_pSpace);
+					m_pPlayer->SetPosition(float(i)*32, float(curLine)*32);
+					m_Renderer.AddDrawableSprite(m_pPlayer->GetSprite());
+					break;
+				}
 			case('#'):
 				{
 					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_SOLID, sf::Vector2f(float(i)*32,float(curLine)*32) );
@@ -222,92 +225,7 @@ void GameInst::Update(float a_dt)
 		for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
 		{
 			(*it)->Update(a_dt);
-		}
-
-		// Update block stuff
-		/*for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
-		{
-			(*it)->Update(a_dt);
-			//Check if a block is able to trigger.
-			if ((*it)->Type(Block::BLOCK_DOOR) || (*it)->Type(Block::BLOCK_BUTTON) || (*it)->Type(Block::BLOCK_END)) {
-				for (auto it2 = m_blocks.begin(); it2 != m_blocks.end();++it2) {
-					sf::Vector2f sourcePos = (*it)->GetSprite()->sprite->getPosition();
-					sf::Vector2f targetPos = (*it2)->GetSprite()->sprite->getPosition();
-					
-					// NOTE: Bounds are intentionally not matched with either tile size or bounding sizes to allow for fine tuning.
-					//       Current values should be optimal.
-					
-					// Activate door if player is mostly on the same tile
-					if ((*it)->Type(Block::BLOCK_DOOR) && (*it2)->Type(Block::BLOCK_PLAYER)) {
-						if (targetPos.x + 8 > sourcePos.x && targetPos.x - 8 < sourcePos.x && targetPos.y < sourcePos.y && targetPos.y + 32 > sourcePos.y) {
-							// Complete level
-							(*it2)->SetActivated(true);
-						}
-					}
-
-					// Press button if player is standing anywhere above the tile.
-					if ((*it)->Type(Block::BLOCK_BUTTON) && (*it2)->Type(Block::BLOCK_PLAYER)) {
-						if (targetPos.x + 63 > sourcePos.x && targetPos.x - 31 < sourcePos.x && targetPos.y < sourcePos.y && targetPos.y + 8 > sourcePos.y) {
-							// Press button
-							(*it)->SetActivated(true);
-						}
-					}
-
-					// if (BLOCK_END && LASER) activate door --- make the laser first!
-				}
-			}
-			
-
-			// Check if a block has triggered.
-			if ((*it)->GetActivated()) {
-				int targetBlock = (*it)->GetOutput();
-
-				// If the block has an output, activate it.
-				if (targetBlock != -1) m_blocks[targetBlock]->SetActivated(true);
-
-				// Depress buttons
-				if ((*it)->Type(Block::BLOCK_BUTTON)) (*it)->SetActivated(false);
-			}
-		}*/
-
-		/*
-		// Calculate and create new laser path
-		sf::Vector2f laserPos = sf::Vector2f((float)startX,(float)startY);
-		sf::Vector2f laserDir = sf::Vector2f(1.0f,0.0f);
-		unsigned int iter = 0;
-		while (laserPos.x >= 0 && laserPos.x <= 1024 && laserPos.y >= 0 && laserPos.y <= 768 && iter < m_laserSprites.size()) {
-			// Check to see if the laser has hit anything.
-			for (auto it = m_blocks.begin(); it != m_blocks.end();++it) {
-				sf::Vector2f pos = (*it)->GetSprite()->sprite->getPosition();
-				if (pos.x + 48 > laserPos.x + 16 && pos.x < laserPos.x + 16 && pos.y + 48 > laserPos.y + 16 && pos.y < laserPos.y + 16) {
-
-					// Rotate the laser
-					float cs = cos(laserRotation);
-					float sn = sin(laserRotation);
-					laserDir.x = cs * laserDir.x - sn * laserDir.y;
-					laserDir.y = sn * laserDir.x + cs * laserDir.y;
-
-					// Normalise the new direction
-					float length = sqrtf((laserDir.x*laserDir.x) + (laserDir.y*laserDir.y));
-					laserDir.x = laserDir.x / length;
-					laserDir.y = laserDir.y / length;
-
-					laserPos.x += laserDir.x * 4;
-					laserPos.y += laserDir.y * 4;
-
-					//std::cout << "X: " << laserDir.x << "Y: " << laserDir.y << "\n";
-					break; // don't collide with multiple blocks at once
-				}
-			}
-
-			laserPos.x += laserDir.x * 4;
-			laserPos.y += laserDir.y * 4;
-
-			m_laserSprites[iter].sprite->setPosition(laserPos);
-
-			++iter;
-		}
-		*/
+		}		
 	}
 }
 

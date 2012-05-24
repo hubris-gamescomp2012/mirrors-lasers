@@ -49,6 +49,15 @@ Emitter::Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_Sta
 	
 }
 
+void Emitter::Update(float a_Dt)
+{
+	if(m_pAnimator)
+		m_pAnimator->Update(a_Dt);
+
+	if(m_pStartLaser)
+		m_pStartLaser->Update(a_Dt);
+}
+
 Emitter::~Emitter()
 {
 	//clear bounding box
@@ -67,15 +76,10 @@ Emitter::~Emitter()
 	}
 
 	//clear anim
-	if (m_pAnimator)
+	if (m_pAnimator) 
 		delete m_pAnimator;
-}
 
-void Emitter::Update(float a_Dt)
-{
-	if(m_pAnimator)
-		m_pAnimator->Update(a_Dt);
-
-	if(m_pStartLaser)
-		m_pStartLaser->Update(a_Dt);
+	goto MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan;
+	MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan:{}
+	//you're so funny
 }

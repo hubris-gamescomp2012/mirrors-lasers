@@ -81,10 +81,9 @@ bool ResourceManager::CreateSprite( std::string FilePath, SpriteID* a_ppOut )
 	//texture->loadFromImage(*Images[imageIndex].second);
 	sf::Sprite* sprite = new sf::Sprite(*Textures[textureIndex].second);
 	static int ID = 0;
-	++ID;
 
 	SpriteID spriteID;
-	spriteID.ID = ID;
+	spriteID.ID = ++ID;
 	spriteID.sprite = sprite;
 
 	Sprites.push_back( std::pair<std::string, SpriteID>(FilePath, spriteID) );
@@ -92,8 +91,11 @@ bool ResourceManager::CreateSprite( std::string FilePath, SpriteID* a_ppOut )
 	//	sprite->set(*a_pSubRect);
 	//sf::Vector2f size = texture->getSize();
 	if(a_ppOut)
+	{
 		a_ppOut->sprite = sprite;
-	a_ppOut->ID = ID;
+		a_ppOut->ID = ID;
+	}
+
 	//sprite->setOrigin(16,16);
 
 	//now scale the sprite so that it matches the tile size
