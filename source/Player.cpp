@@ -49,17 +49,120 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 	m_pMirror = new Mirror(a_ResMgr, a_Space);
 
 	//create some spare mirrors
-	for(short i=0;i<3;i++)
+	//
+	m_resMgr.CreateSprite("media/mirror1.png", &SpareMirrorOne.sprite);
+	float randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	float randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	SpareMirrorOne.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f(randX, randY));
+	//m_resMgr.AddDrawableSprite(&SpareMirrorOne.sprite);
+	//
+	m_resMgr.CreateSprite("media/mirror1.png", &SpareMirrorTwo.sprite);
+	randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	SpareMirrorTwo.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f(randX, randY));
+	//m_resMgr.AddDrawableSprite(&SpareMirrorTwo.sprite);
+	//
+	m_resMgr.CreateSprite("media/mirror1.png", &SpareMirrorThree.sprite);
+	randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	SpareMirrorThree.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f(randX, randY));
+	//m_resMgr.AddDrawableSprite(&SpareMirrorThree.sprite);
+}
+
+void Player::UpdateFloatingMirrors(float a_Dt)
+{
+	//update the mirror position
+	/*floatingMirror SpareMirrorOne;
+	floatingMirror SpareMirrorTwo;
+	floatingMirror SpareMirrorThree;*/
+	/*
 	{
-		SpareMirrors.push_back(floatingMirror());
-		m_resMgr.CreateSprite("media/mirror.png", &SpareMirrors.back().sprite);
-		//
-		float randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
-		float randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
-		SpareMirrors.back().sprite.sprite->setPosition(float(m_pBody->p.x) + randX, float(m_pBody->p.y) + randY);
-		//
-		m_resMgr.AddDrawableSprite(&SpareMirrors.back().sprite);
+		//get the distance this mirror is from the player
+		sf::Vector2f playerCenter = sf::Vector2f( float(m_pBody->p.x), float(m_pBody->p.y) );
+		float dist = VectorMagnitude(playerCenter - SpareMirrorOne.sprite.sprite->getPosition());
+
+		//if it's too far away, make it move a little
+		if(dist > 32)
+		{
+			//speed up
+			SpareMirrorOne.velocity += 100 * a_Dt;
+		}
+		else if(SpareMirrorOne.velocity > 0)
+		{
+			//slow down
+			//it->velocity -= it->velocity * 0.9 * a_Dt;
+			SpareMirrorOne.velocity = 0;
+		}
+		else
+		{
+			SpareMirrorOne.velocity = 0;
+		}
+
+		//move it in the direction of the player
+		sf::Vector2f moveDir = VectorNormalise(playerCenter - SpareMirrorOne.sprite.sprite->getPosition());
+		sf::Vector2f sprPos = SpareMirrorOne.sprite.sprite->getPosition();
+		SpareMirrorOne.sprite.sprite->setPosition(sprPos + moveDir * SpareMirrorOne.velocity);
 	}
+
+	{
+		//get the distance this mirror is from the player
+		sf::Vector2f playerCenter = sf::Vector2f( float(m_pBody->p.x), float(m_pBody->p.y) );
+		float dist = VectorMagnitude(playerCenter - SpareMirrorTwo.sprite.sprite->getPosition());
+
+		//if it's too far away, make it move a little
+		if(dist > 32)
+		{
+			//speed up
+			SpareMirrorTwo.velocity += 100 * a_Dt;
+		}
+		else if(SpareMirrorTwo.velocity > 0)
+		{
+			//slow down
+			//it->velocity -= it->velocity * 0.9 * a_Dt;
+			SpareMirrorTwo.velocity = 0;
+		}
+		else
+		{
+			SpareMirrorTwo.velocity = 0;
+		}
+
+		//move it in the direction of the player
+		sf::Vector2f moveDir = VectorNormalise(playerCenter - SpareMirrorTwo.sprite.sprite->getPosition());
+		sf::Vector2f sprPos = SpareMirrorTwo.sprite.sprite->getPosition();
+		SpareMirrorTwo.sprite.sprite->setPosition(sprPos + moveDir * SpareMirrorTwo.velocity);
+	}
+
+	{
+		//get the distance this mirror is from the player
+		sf::Vector2f playerCenter = sf::Vector2f( float(m_pBody->p.x), float(m_pBody->p.y) );
+		float dist = VectorMagnitude(playerCenter - SpareMirrorThree.sprite.sprite->getPosition());
+
+		//if it's too far away, make it move a little
+		if(dist > 32)
+		{
+			//speed up
+			SpareMirrorThree.velocity += 100 * a_Dt;
+		}
+		else if(SpareMirrorThree.velocity > 0)
+		{
+			//slow down
+			//it->velocity -= it->velocity * 0.9 * a_Dt;
+			SpareMirrorThree.velocity = 0;
+		}
+		else
+		{
+			SpareMirrorThree.velocity = 0;
+		}
+
+		//move it in the direction of the player
+		sf::Vector2f moveDir = VectorNormalise(playerCenter - SpareMirrorThree.sprite.sprite->getPosition());
+		sf::Vector2f sprPos = SpareMirrorThree.sprite.sprite->getPosition();
+		SpareMirrorThree.sprite.sprite->setPosition(sprPos + moveDir * SpareMirrorThree.velocity);
+	}
+	*/
+	SpareMirrorOne.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
+	SpareMirrorTwo.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
+	SpareMirrorThree.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
 }
 
 void Player::Update(float a_Dt)
@@ -97,35 +200,16 @@ void Player::Update(float a_Dt)
 		}
 	}
 
-	//update the mirror position
-	for(auto it = SpareMirrors.begin(); it != SpareMirrors.end(); it++)
-	{
-		//get the distance this mirror is from the player
-		sf::Vector2f playerCenter = sf::Vector2f( float(m_pBody->p.x), float(m_pBody->p.y) );
-		float dist = VectorMagnitude(playerCenter - it->sprite.sprite->getPosition());
+	//update floating mirrors
+	UpdateFloatingMirrors(a_Dt);
 
-		//if it's too far away, make it move a little
-		if(dist > 32)
-		{
-			//speed up
-			it->velocity += 100 * a_Dt;
-		}
-		else if(it->velocity > 0)
-		{
-			//slow down
-			//it->velocity -= it->velocity * 0.9 * a_Dt;
-			it->velocity = 0;
-		}
-		else
-		{
-			it->velocity = 0;
-		}
-
-		//move it in the direction of the player
-		sf::Vector2f moveDir = VectorNormalise(playerCenter - it->sprite.sprite->getPosition());
-		sf::Vector2f sprPos = it->sprite.sprite->getPosition();
-		it->sprite.sprite->setPosition(sprPos + moveDir * it->velocity);
-	}
+	//update current mirror
+	sf::Vector2f curPos = m_Sprite.sprite->getPosition();
+	sf::Vector2u sprSize = m_pMirror->GetSprite()->sprite->getTexture()->getSize();
+	curPos.y += 16.f + sprSize.y / 2;
+	curPos.x += sprSize.x / 2;
+	m_pMirror->SetPosition(curPos);
+	m_pMirror->SetRotationAngle(GetAngleFromDir( VectorNormalise(m_pInputHandler->GetMousePos() - curPos) ));
 }
 
 void Player::SetOnGround()
@@ -158,11 +242,18 @@ void Player::SetPosition(float a_X, float a_Y)
 	//call parent function
 	GameObject::SetPosition(a_X, a_Y);
 
+	m_pMirror->SetPosition(a_X, a_Y);
+
 	//move the spare mirrors
-	for(auto it = SpareMirrors.begin(); it != SpareMirrors.end(); it++)
-	{
-		float randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
-		float randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
-		it->sprite.sprite->setPosition(float(m_pBody->p.x) + randX, float(m_pBody->p.y) + randY);
-	}
+	float randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	float randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	SpareMirrorOne.sprite.sprite->setPosition(float(m_pBody->p.x) + 0, float(m_pBody->p.y) + 0);
+	//
+	randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	SpareMirrorTwo.sprite.sprite->setPosition(float(m_pBody->p.x) + 0, float(m_pBody->p.y) + 0);
+	//
+	randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
+	SpareMirrorThree.sprite.sprite->setPosition(float(m_pBody->p.x) + 0, float(m_pBody->p.y) + 0);
 }

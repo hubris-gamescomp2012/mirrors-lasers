@@ -37,6 +37,7 @@ void GameObject::SetPosition(float a_X, float a_Y)
 		sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
 		m_pBody->p.x = a_X + sprSize.x/2;
 		m_pBody->p.y = a_Y + sprSize.y/2;
+		m_Sprite.sprite->setPosition(a_X, a_Y);
 	}
 	else if(m_Sprite.sprite)
 	{
