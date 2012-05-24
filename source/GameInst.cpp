@@ -80,7 +80,6 @@ void GameInst::LoadLevel()
 	m_pSpace = cpSpaceNew();
 	cpSpaceSetGravity(m_pSpace, gravity);
 
-	/*
 	cpFloat offSet = 0;
 	//top
 	m_WorldBounds.Top = cpSegmentShapeNew(m_pSpace->staticBody, cpv(offSet,offSet), cpv(cpFloat(windowDim.x)+offSet,offSet), 1);
@@ -102,7 +101,6 @@ void GameInst::LoadLevel()
 	cpShapeSetFriction(m_WorldBounds.Right, 0.5);
 	cpSpaceAddShape(m_pSpace, m_WorldBounds.Right);
 	cpShapeSetCollisionType(m_WorldBounds.Right, SURFACE_LEFT);
-	*/
 	
 	//player-surface collision callbacks
 	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_TOP,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
