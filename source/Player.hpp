@@ -5,6 +5,12 @@
 
 class Mirror;
 
+struct floatingMirror
+{
+	float velocity;
+	SpriteID sprite;
+};
+
 class Player : public GameObject
 {
 public:
@@ -17,6 +23,10 @@ public:
 	void SetOnGround();
 	//
 	Mirror* GetMirror();
+	//
+	virtual void SetPosition(float a_X, float a_Y);
+	//
+	std::vector<floatingMirror> SpareMirrors;
 	//
 private:
 	bool m_OnGround;
