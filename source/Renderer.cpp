@@ -78,7 +78,7 @@ void Renderer::RemoveDrawableSprite(SpriteID* a_pSprite)
 	for(auto it = VisibleSprites.begin(); it != VisibleSprites.end();)
 	{
 		if ((*it)->ID == a_pSprite->ID) {
-			std::cout << "Stored: " << (*it)->ID << " Given: " << a_pSprite->ID << "\n";
+			//std::cout << "Stored: " << (*it)->ID << " Given: " << a_pSprite->ID << "\n";
 			it = VisibleSprites.erase(it);
 		}
 		else
