@@ -130,7 +130,6 @@ void GameInst::LoadLevel()
 				{
 					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_SOLID, sf::Vector2f(float(i)*32,float(curLine)*32) );
 					m_blocks.push_back(block);
-					//block->SetPosition();
 					m_Renderer.AddDrawableSprite(block->GetSprite());
 					break;
 				}
@@ -145,28 +144,15 @@ void GameInst::LoadLevel()
 					/*Emitters.push_back(new Emitter(m_ResMgr, *m_pSpace));
 					Emitters.back()->SetPosition(i * 32, curLine * 32);
 					m_Renderer.AddDrawableSprite(Emitters.back()->GetSprite());*/
+					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_END, sf::Vector2f(float(i)*32,float(curLine)*32) );
+					m_blocks.push_back(block);
+					m_Renderer.AddDrawableSprite(block->GetSprite());
 					break;
 				}
 			}
 			//
 		}
 		curLine++;
-	}
-	file.close();
-
-	file.open(("media/level1_binds.txt"));
-	while( std::getline(file,line) )
-	{
-		char buffer[32];
-		//char* tokenBuffer;
-		sprintf_s(buffer, 32, line.c_str());
-
-		// Get the block IDs to link them
-		//int block1 = atoi(strtok_s(buffer,",", &tokenBuffer)) + atoi(strtok_s(NULL ,"=", &tokenBuffer)) * 32;
-		//int block2 = atoi(strtok_s(NULL,",", &tokenBuffer)) + atoi(strtok_s(NULL,",", &tokenBuffer)) * 32;
-		
-		// Link them
-		//m_blocks[block1]->SetOutput(block2);
 	}
 	file.close();
 
@@ -230,12 +216,17 @@ void GameInst::Update(float a_dt)
 			//
 		}
 		
-		// Update block stuff
+		//update blocks
 		for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
 		{
 			(*it)->Update(a_dt);
+		}
+
+		// Update block stuff
+		/*for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
+		{
+			(*it)->Update(a_dt);
 			//Check if a block is able to trigger.
-			/*
 			if ((*it)->Type(Block::BLOCK_DOOR) || (*it)->Type(Block::BLOCK_BUTTON) || (*it)->Type(Block::BLOCK_END)) {
 				for (auto it2 = m_blocks.begin(); it2 != m_blocks.end();++it2) {
 					sf::Vector2f sourcePos = (*it)->GetSprite()->sprite->getPosition();
@@ -263,7 +254,7 @@ void GameInst::Update(float a_dt)
 					// if (BLOCK_END && LASER) activate door --- make the laser first!
 				}
 			}
-			*/
+			
 
 			// Check if a block has triggered.
 			if ((*it)->GetActivated()) {
@@ -275,7 +266,7 @@ void GameInst::Update(float a_dt)
 				// Depress buttons
 				if ((*it)->Type(Block::BLOCK_BUTTON)) (*it)->SetActivated(false);
 			}
-		}
+		}*/
 
 		/*
 		// Calculate and create new laser path

@@ -4,16 +4,19 @@
 
 #include <iostream>
 #include <SFML\Graphics\Sprite.hpp>
-#include <SFML\Graphics\Texture.hpp>
+#include "Animator.hpp"
 
 Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector2f a_Pos)
 :	GameObject(a_ResMgr, a_Space)
 ,	m_activated(false)
 ,	m_output(-1)
 ,	m_blockType(a_type)
+,	m_pAnimator(NULL)
 {
 	m_Pos = a_Pos;
 	MyType = GameObject::BLOCK;
+	cpFloat width = 32;
+	cpFloat height = 32;
 	// Set sprite based on type
 	switch(m_blockType) {
 		case BLOCK_SOLID:
@@ -23,21 +26,11 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 			//
 			m_resMgr.CreateSprite("media/block_glass_32x32.png", &m_Sprite);
 			break;
-		case BLOCK_DOOR:
-			//
-			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
-			break;
-		case BLOCK_PLAYER:
-			//
-			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
-			break;
-		case BLOCK_START:
-			//
-			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
-			break;
 		case BLOCK_END:
 			//
-			m_resMgr.CreateSprite("media/block_wall_32x32.png", &m_Sprite);
+			m_resMgr.CreateSprite("media/Receptor_on_32x32.png", &m_Sprite);
+			m_pAnimator = new Animator(m_Sprite, 32, 32, 3, 7, 10, 21);
+
 			break;
 		default:
 			std::cout << "invalid block type!\n";
@@ -79,8 +72,6 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 	*/
 
 	//create the physbody
-	cpFloat width = 32;
-	cpFloat height = 32;
 	cpFloat mass = 1;
 
 	// The moment of inertia is like mass for rotation
@@ -102,33 +93,37 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 	//
 	
 	float offSet = 0;
-	sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
+	//sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
 	//top
-	m_BoxBounds.Top = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y), cpv(a_Pos.x + sprSize.x, a_Pos.y), 1);
+	m_BoxBounds.Top = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x-offSet, a_Pos.y-height), cpv(a_Pos.x, a_Pos.y-height), 1);
 	m_BoxBounds.Top->collision_type = SURFACE_TOP;
 	m_BoxBounds.Top->data = this;
 	cpShapeSetFriction(m_BoxBounds.Top, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Top);
 	//bottom
-	m_BoxBounds.Bottom = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y + sprSize.y), cpv(a_Pos.x + sprSize.x, a_Pos.y + sprSize.y), 1);
+	m_BoxBounds.Bottom = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y), cpv(a_Pos.x, a_Pos.y), 1);
 	m_BoxBounds.Bottom->collision_type = SURFACE_BOTTOM;
 	m_BoxBounds.Bottom->data = this;
 	cpShapeSetFriction(m_BoxBounds.Bottom, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Bottom);
 	//left
-	m_BoxBounds.Left = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y + sprSize.y), cpv(a_Pos.x, a_Pos.y), 1);
+	m_BoxBounds.Left = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x-offSet, a_Pos.y), cpv(a_Pos.x-offSet, a_Pos.y-height), 1);
 	m_BoxBounds.Left->collision_type = SURFACE_LEFT;
 	m_BoxBounds.Left->data = this;
 	cpShapeSetFriction(m_BoxBounds.Left, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Left);
 	//right
-	m_BoxBounds.Right = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x + sprSize.x, a_Pos.y), cpv(a_Pos.x + sprSize.x, a_Pos.y + sprSize.y), 1);
+	m_BoxBounds.Right = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y-height), cpv(a_Pos.x, a_Pos.y), 1);
 	m_BoxBounds.Right->collision_type = SURFACE_RIGHT;
 	m_BoxBounds.Right->data = this;
 	cpShapeSetFriction(m_BoxBounds.Right, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Right);
 
 	m_Sprite.sprite->setPosition(m_Pos);
+}
+
+void Block::Update(float a_dt) {
+	if (m_pAnimator) m_pAnimator->Update(a_dt);
 }
 
 void Block::SetOutput(int a_output) {

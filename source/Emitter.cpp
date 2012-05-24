@@ -1,5 +1,6 @@
 #include "Emitter.hpp"
 #include "Laser.hpp"
+#include "Animator.hpp"
 
 #include <SFML\Graphics\Sprite.hpp>
 #include <SFML\Graphics\Texture.hpp>
@@ -7,8 +8,10 @@
 Emitter::Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPos)
 :	GameObject(a_ResMgr, a_Space)
 ,	m_Space(a_Space)
+,	m_pAnimator(NULL)
 {
-	m_resMgr.CreateSprite("media/laser_emitter_32x64.png", &m_Sprite);
+	m_resMgr.CreateSprite("media/Transmitter_on_32x32.png", &m_Sprite);
+	m_pAnimator = new Animator(m_Sprite, 32, 32, 3, 8, 10, 24);
 	m_Sprite.sprite->setPosition(a_StartPos);
 
 	float offSet = 0;
@@ -48,6 +51,13 @@ Emitter::Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_Sta
 
 void Emitter::Update(float a_Dt)
 {
+	if(m_pAnimator)
+		m_pAnimator->Update(a_Dt);
+
 	if(m_pStartLaser)
 		m_pStartLaser->Update(a_Dt);
+}
+
+Emitter::~Emitter() {
+	if (m_pAnimator) delete m_pAnimator;
 }

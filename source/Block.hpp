@@ -10,23 +10,23 @@ namespace sf
 	class Sprite;
 }
 
+class Animator;
+
 class Block : public GameObject
 {
 public:
 	enum BlockType {
 		BLOCK_SOLID = 0,
 		BLOCK_GLASS,
-		BLOCK_DOOR,
 		BLOCK_START,
-		BLOCK_END,
-		BLOCK_PLAYER,
-		BLOCK_BUTTON
+		BLOCK_END
 	};
 	Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector2f a_Pos);
 	//
 	void SetOutput(int a_block);
 	const int GetOutput();
 	void SetActivated(bool a_state);
+	void Update(float a_dt);
 	const bool GetActivated();
 	const int Type();
 	const bool Type(int a_type);
@@ -36,6 +36,7 @@ private:
 	int m_output;
 	int m_blockType;
 	sf::Vector2f m_Pos;
+	Animator* m_pAnimator;
 	//
 	StaticRigidQuad m_BoxBounds;
 };
