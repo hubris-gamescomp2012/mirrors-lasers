@@ -11,11 +11,29 @@ class GameObject
 public:
 	GameObject(ResourceManager& a_ResMgr, cpSpace& a_Space);
 	~GameObject();
+	enum Type
+	{
+		INVALID = 0,
+		//
+		BLOCK,
+		PLAYER,
+		EMITTER,
+		CATCHER,
+		CURSOR,
+		LASER,
+		//
+		MAX
+	};
+	Type GetType();
 	//
 	SpriteID* GetSprite();
 	virtual void Update(float a_Dt);
 	//
-	void SetPosition(float a_X, float a_Y);
+	virtual void SetPosition(float a_X, float a_Y);
+	virtual void SetPosition(sf::Vector2f a_NewPos);
+	virtual void SetPositionCenter(sf::Vector2f a_NewPos);
+	virtual void SetPositionCenter(float a_X, float a_Y);
+	virtual sf::Vector2f GetPosition();
 	//
 	void SetInputHandler(InputHandler* a_pInputHandler);
 	InputHandler* GetInputHandler();
@@ -23,15 +41,6 @@ public:
 	void Hide();
 	void Show();
 	//
-	enum Type
-	{
-		INVALID = 0,
-		BLOCK,
-		PLAYER,
-		BOUNDARY,
-		//
-		MAX
-	};
 protected:
 	cpBody *m_pBody;
 	cpShape *m_pShape;

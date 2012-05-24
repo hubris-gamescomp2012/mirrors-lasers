@@ -211,7 +211,7 @@ float GetAngleFromDir(sf::Vector2f a_Dir)
 	return rad;
 }
 
-float GetVectorMagnitude(sf::Vector2f a_Vec)
+float VectorMagnitude(sf::Vector2f a_Vec)
 {
 	return sqrtf(a_Vec.x * a_Vec.x + a_Vec.y * a_Vec.y);
 }
@@ -232,3 +232,9 @@ float VectorToAngle(sf::Vector2f vector)
 //2pi rad = 360
 //1 rad = 180/pi
 //x rad = 180x/pi
+
+sf::Vector2f VectorNormalise(sf::Vector2f a_Vec)
+{
+	return a_Vec / VectorMagnitude(a_Vec);
+}
+

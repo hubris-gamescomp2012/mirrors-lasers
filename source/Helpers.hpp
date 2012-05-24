@@ -21,6 +21,8 @@ sf::Vector2f AngleToVector(float angle);
 
 float VectorToAngle(sf::Vector2f vector);
 
-float GetVectorMagnitude(sf::Vector2f a_Vec);
+float VectorMagnitude(sf::Vector2f a_Vec);
+
+sf::Vector2f VectorNormalise(sf::Vector2f a_Vec);
 
 #endif	//HELPERS_HPP

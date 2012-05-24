@@ -33,9 +33,9 @@ public:
 	const bool Type(int a_type);
 	//
 private:
-	bool m_activated;
 	int m_output;
 	int m_blockType;
+	bool m_activated;
 	sf::Vector2f m_Pos;
 	Animator* m_pAnimator;
 	//

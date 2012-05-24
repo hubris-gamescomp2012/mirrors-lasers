@@ -1,5 +1,5 @@
 #include "Player.hpp"
-#include <iostream>
+#include "Mirror.hpp"
 
 #include "InputHandler.hpp"
 #include "Helpers.hpp"
@@ -8,13 +8,16 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <iostream>
 
 Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 :	GameObject(a_ResMgr, a_Space)
 ,	m_OnGround(false)
 ,	RedirectAngle(0)
+,	m_RedirectDir(0,0)
+,	m_pMirror(NULL)
 {
-	MyType = GameObject::PLAYER;
+	MyType = PLAYER;
 	//create a sprite
 	m_resMgr.CreateSprite("media/player_body_64x64.png", &m_Sprite);
 
@@ -41,6 +44,9 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 	m_pShape->data = this;
 
 	cpShapeSetCollisionType(m_pShape, COLLIDABLE::PLAYER);
+
+	//create the mirror
+	m_pMirror = new Mirror(a_ResMgr, a_Space);
 }
 
 void Player::Update(float a_Dt)
@@ -89,4 +95,19 @@ void Player::SetOnGround()
 float Player::GetRedirectAngle()
 {
 	return RedirectAngle;
+}
+
+sf::Vector2f Player::GetRedirectDir()
+{
+	if(m_pInputHandler)
+	{
+		sf::Vector2f mousePos = m_pInputHandler->GetMousePos();
+		m_RedirectDir = VectorNormalise(m_pInputHandler->GetMousePos() - GetPosition());
+	}
+	return m_RedirectDir;
+}
+
+void Player::SetRedirectDir(sf::Vector2f a_NewDir)
+{
+	m_RedirectDir = a_NewDir;
 }

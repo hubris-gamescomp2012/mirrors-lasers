@@ -44,6 +44,30 @@ void GameObject::SetPosition(float a_X, float a_Y)
 	}
 }
 
+void GameObject::SetPosition(sf::Vector2f a_NewPos)
+{
+	SetPosition(a_NewPos.x, a_NewPos.y);
+}
+
+void GameObject::SetPositionCenter(float a_X, float a_Y)
+{
+	if(m_pBody && m_Sprite.sprite)
+	{
+		m_pBody->p.x = a_X;
+		m_pBody->p.y = a_Y;
+	}
+	else if(m_Sprite.sprite)
+	{
+		sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
+		m_Sprite.sprite->setPosition(a_X - sprSize.x/2, a_Y - sprSize.y/2);
+	}
+}
+
+void GameObject::SetPositionCenter(sf::Vector2f a_NewPos)
+{
+	SetPosition(a_NewPos.x, a_NewPos.y);
+}
+
 void GameObject::Update(float a_Dt)
 {
 	if(m_pBody && m_Sprite.sprite)
@@ -71,4 +95,17 @@ void GameObject::Hide()
 void GameObject::Show()
 {
 	m_resMgr.AddDrawableSprite(&m_Sprite);
+}
+
+GameObject::Type GameObject::GetType()
+{
+	return MyType;
+}
+
+sf::Vector2f GameObject::GetPosition()
+{
+	sf::Vector2f out(0,0);
+	if(m_Sprite.sprite)
+		out = m_Sprite.sprite->getPosition();
+	return out;
 }
