@@ -3,6 +3,8 @@
 
 #include "GameObject.hpp"
 #include "Defs.hpp"
+#include <vector>
+#include <SFML/System/Vector2.hpp>
 
 class Laser;
 class Animator;
@@ -13,6 +15,8 @@ public:
 	Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPos);
 	~Emitter();
 	virtual void Update(float a_Dt);
+	void ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions);
+	bool GetWon();
 	//
 private:
 	Laser* m_pStartLaser;

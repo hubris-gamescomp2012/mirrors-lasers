@@ -3,6 +3,8 @@
 
 #include "GameObject.hpp"
 
+class Mirror;
+
 class Player : public GameObject
 {
 public:
@@ -14,10 +16,14 @@ public:
 	sf::Vector2f GetRedirectDir();
 	void SetOnGround();
 	//
+	Mirror* GetMirror();
+	//
 private:
 	bool m_OnGround;
 	float RedirectAngle;
 	sf::Vector2f m_RedirectDir;
+	//
+	Mirror* m_pMirror;
 	//
 };
 

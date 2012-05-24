@@ -31,6 +31,8 @@ public:
 	//
 	virtual void SetPosition(float a_X, float a_Y);
 	virtual void SetPosition(sf::Vector2f a_NewPos);
+	virtual void SetPositionCenter(sf::Vector2f a_NewPos);
+	virtual void SetPositionCenter(float a_X, float a_Y);
 	virtual sf::Vector2f GetPosition();
 	//
 	void SetInputHandler(InputHandler* a_pInputHandler);

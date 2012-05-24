@@ -1,8 +1,8 @@
 #include "Laser.hpp"
 #include "Helpers.hpp"
-#include "Defs.hpp"
 #include "Animator.hpp"
 #include "Player.hpp"
+#include <iostream>
 
 #include <SFML\Graphics\Sprite.hpp>
 #include <SFML\Graphics\Texture.hpp>
@@ -19,6 +19,9 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 ,	m_FacingDir(a_FacingDir)
 ,	m_pAnimator(NULL)
 ,	m_endDrawn(false)
+,	m_endDrawnHack(false)
+,	m_won(false)
+//,	m_catcherPositions(NULL)
 {
 	MyType = LASER;
 
@@ -30,6 +33,7 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 	m_Sprite.sprite->setPosition(a_StartPos);
 	m_Sprite.sprite->setOrigin(0,4);
 	m_Sprite.sprite->setRotation(VectorToAngle(m_FacingDir));
+
 	//
 	
 	//create the physbody
@@ -88,7 +92,7 @@ void Laser::Update(float a_Dt)
 
 	//grab some helper data
 	m_MaxLength = float(min( cpSegmentQueryHitDist(cpStartPos, cpEndPos, info), MAX_LASER_DIST ));
-	cpVect hitPoint = cpSegmentQueryHitPoint(cpStartPos, cpEndPos, info);
+	m_hitPoint = cpSegmentQueryHitPoint(cpStartPos, cpEndPos, info);
 
 	GameObject* pGameObj = NULL;
 	if(collided)
@@ -164,7 +168,8 @@ void Laser::Update(float a_Dt)
 			else
 				m_resMgr.AddDrawableSprite(&m_endSprite);
 			m_endDrawn = true;
-		}
+		}	
+		m_endDrawnHack = true;
 	}
 	
 	//update reflected laser segment
@@ -186,7 +191,7 @@ void Laser::Update(float a_Dt)
 			m_reflectSprite.sprite->setPosition(playerPos.x, playerPos.y);
 		}
 		else
-			m_endSprite.sprite->setPosition(float(hitPoint.x)-8, float(hitPoint.y)-16);
+			m_endSprite.sprite->setPosition(float(m_hitPoint.x)-4, float(m_hitPoint.y)-16);
 		if(m_pAnimator)
 			m_pAnimator->Update(a_Dt);
 	}
@@ -251,4 +256,28 @@ void Laser::SetFacingDir(sf::Vector2f a_NewDir)
 	m_Sprite.sprite->setRotation(VectorToAngle(m_FacingDir));
 	m_endSprite.sprite->setRotation(VectorToAngle(m_FacingDir));
 
+}
+
+void Laser::SetCatchers(std::vector<sf::Vector2f>& a_catcherPositions)
+{
+	// Check win condition
+	if (m_CurLength > m_MaxLength)
+	{
+		for (auto it = a_catcherPositions.begin(); it != a_catcherPositions.end(); ++it)
+		{
+			if (it->x - 16 < (float)m_hitPoint.x &&
+				it->x + 32 > (float)m_hitPoint.x &&
+				it->y - 16 < (float)m_hitPoint.y &&
+				it->y + 32 > (float)m_hitPoint.y)
+			{
+					m_won = true;
+					break;
+			}
+		}
+	}
+}
+
+bool Laser::GetWon()
+{
+	return m_won;
 }

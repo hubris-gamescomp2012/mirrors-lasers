@@ -1,5 +1,5 @@
 #include "Player.hpp"
-#include <iostream>
+#include "Mirror.hpp"
 
 #include "InputHandler.hpp"
 #include "Helpers.hpp"
@@ -8,12 +8,14 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <iostream>
 
 Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 :	GameObject(a_ResMgr, a_Space)
 ,	m_OnGround(false)
 ,	RedirectAngle(0)
 ,	m_RedirectDir(0,0)
+,	m_pMirror(NULL)
 {
 	MyType = PLAYER;
 	//create a sprite
@@ -42,6 +44,9 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 	m_pShape->data = this;
 
 	cpShapeSetCollisionType(m_pShape, COLLIDABLE::PLAYER);
+
+	//create the mirror
+	m_pMirror = new Mirror(a_ResMgr, a_Space);
 }
 
 void Player::Update(float a_Dt)

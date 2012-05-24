@@ -102,20 +102,25 @@ void GameInst::LoadLevel()
 	file.open(("media/level1.txt"));
 	std::string line;
 	int curLine = 0;
+
 	while( std::getline(file,line) )
 	{
 		//
 		for(unsigned int i = 0; i < line.size();i++)
 		{
+			bool playerMade = false;
 			char c = line[i];
 			switch(c)
 			{
 			case('p'):
 				{
 					//create player
-					m_pPlayer = new Player(m_ResMgr, *m_pSpace);
-					m_pPlayer->SetPosition(float(i)*32, float(curLine)*32);
-					m_Renderer.AddDrawableSprite(m_pPlayer->GetSprite());
+					if (!playerMade) {
+						m_pPlayer = new Player(m_ResMgr, *m_pSpace);
+						m_pPlayer->SetPosition(float(i)*32, float(curLine)*32);
+						m_Renderer.AddDrawableSprite(m_pPlayer->GetSprite());
+						playerMade = true;
+					}
 					break;
 				}
 			case('#'):
@@ -139,6 +144,7 @@ void GameInst::LoadLevel()
 					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_END, sf::Vector2f(float(i)*32,float(curLine)*32) );
 					m_blocks.push_back(block);
 					m_Renderer.AddDrawableSprite(block->GetSprite());
+					catcherPositions.push_back(block->GetSprite()->sprite->getPosition());
 					break;
 				}
 			}
@@ -223,6 +229,21 @@ void GameInst::Update(float a_dt)
 		for (auto it = Emitters.begin(); it != Emitters.end();++it)
 		{
 			(*it)->Update(a_dt);
+			(*it)->ParseCatchers(catcherPositions);
+			
+			if ((*it)->GetWon()) {
+				static bool won = false;
+				if (!won) {
+					sf::Image image;
+					image.loadFromFile("media/wintext.png");
+					sfg::Image::Ptr winText = sfg::Image::Create(image);
+					winText->SetPosition(sf::Vector2f(512-(float)image.getSize().x/2,386-(float)image.getSize().y/2));
+
+					m_GUIMgr.AddWidget(winText);
+					//Widgets.push_back(winText);
+					won = true;
+				}
+			}
 		}
 		
 		//update blocks

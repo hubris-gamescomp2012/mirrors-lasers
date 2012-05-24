@@ -7,6 +7,7 @@
 #include "Defs.hpp"
 
 #include <vector>
+#include <SFML/System/Vector2.hpp>
 
 #include <SFGUI/Button.hpp>
 #include <SFGUI/Window.hpp>
@@ -59,6 +60,7 @@ private:
 	cpSpace* m_pSpace;	//chipmunk physworld
 	StaticRigidQuad m_WorldBounds;	//world boundaries
 	//
+	std::vector<sf::Vector2f> catcherPositions;
 };
 
 #endif	//GAME_INST_HPP

@@ -89,6 +89,7 @@
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="GameInst.cpp" />
+    <ClCompile Include="GameInst_callbacks.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="guicon.cpp" />
     <ClCompile Include="GUIManager.cpp" />
