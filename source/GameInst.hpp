@@ -22,8 +22,10 @@ class Player;
 class Cursor;
 class Emitter;
 class GameObject;
+class Catcher;
 
-namespace sf {
+namespace sf
+{
 	class Sprite;
 }
 
@@ -46,8 +48,8 @@ public:
 private:
 	Player* m_pPlayer;
 	std::vector<Block*> m_blocks;
-	std::vector<SpriteID> m_laserSprites;
 	std::vector<Emitter*> Emitters;
+	std::vector<Catcher*> Catchers;
 	bool m_Running;
 	Renderer& m_Renderer;
 	ResourceManager& m_ResMgr;

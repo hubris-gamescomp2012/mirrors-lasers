@@ -50,18 +50,6 @@ bool GameInst::Start()
 	// Load the level
 	LoadLevel();
 
-	// Set up the laser sprites
-	/*for (int i = 0; i < 1000; ++i) {
-		SpriteID laser;
-		m_ResMgr.CreateSprite("media/laser.png", &laser);
-		m_laserSprites.push_back(laser);
-	}*/
-
-	// Add them to the draw list (has to be separate for some reason)
-	for (auto it = m_laserSprites.begin(); it != m_laserSprites.end(); ++it) {
-		m_Renderer.AddDrawableSprite(&(*it));
-	}
-
 	//enable user input to the player
 	m_pPlayer->SetInputHandler(m_pInputHandler);
 
@@ -163,16 +151,25 @@ void GameInst::LoadLevel()
 void GameInst::UnloadLevel()
 {
 	// Clear blocks
-	for (auto it = m_blocks.begin(); it != m_blocks.end();) {
+	for (auto it = m_blocks.begin(); it != m_blocks.end();)
+	{
+		m_Renderer.RemoveDrawableSprite((*it)->GetSprite());
 		it = m_blocks.erase(it);
 	}
 
-	// Clear laser sprites
-	for (auto it = m_laserSprites.begin();it != m_laserSprites.end();)
+	//clear laser catchers
+	/*for (auto it = Catchers.begin(); it != Catchers.end();)
 	{
-		m_Renderer.RemoveDrawableSprite(&(*it));
-		m_ResMgr.DeleteSprite((*it).ID);
-		it = m_laserSprites.erase(it);
+		it = Catchers.erase(it);
+		m_Renderer.RemoveDrawableSprite((*it)->GetSprite());
+	}*/
+
+	//clear laser emitters
+	for (auto it = Emitters.begin(); it != Emitters.end();)
+	{
+		m_Renderer.RemoveDrawableSprite((*it)->GetSprite());
+		delete *it;
+		it = Emitters.erase(it);
 	}
 
 	//clear physworld
@@ -183,15 +180,20 @@ void GameInst::UnloadLevel()
 	cpSpaceFree(m_pSpace);
 
 	//clear player
+	m_Renderer.RemoveDrawableSprite(m_pPlayer->GetSprite());
+	delete m_pPlayer;
+	m_pPlayer = NULL;
 }
 
 void GameInst::Stop()
 {
 	m_Running = false;
-	UnloadLevel();
-	
+
 	//disable user input to the player
 	m_pPlayer->SetInputHandler(NULL);
+
+	UnloadLevel();
+	
 }
 
 void GameInst::Update(float a_dt)

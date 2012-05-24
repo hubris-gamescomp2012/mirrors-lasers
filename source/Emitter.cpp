@@ -49,6 +49,28 @@ Emitter::Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_Sta
 	
 }
 
+Emitter::~Emitter()
+{
+	//clear bounding box
+	cpShapeFree(m_BoxBounds.Top);
+	cpShapeFree(m_BoxBounds.Bottom);
+	cpShapeFree(m_BoxBounds.Left);
+	cpShapeFree(m_BoxBounds.Right);
+
+	//clear laser
+	Laser* pCurLaser = m_pStartLaser;
+	while(pCurLaser)
+	{
+		m_resMgr.RemoveDrawableSprite(pCurLaser->GetSprite());
+		pCurLaser = pCurLaser->GetNextSegment();
+		delete pCurLaser;
+	}
+
+	//clear anim
+	if (m_pAnimator)
+		delete m_pAnimator;
+}
+
 void Emitter::Update(float a_Dt)
 {
 	if(m_pAnimator)
@@ -56,8 +78,4 @@ void Emitter::Update(float a_Dt)
 
 	if(m_pStartLaser)
 		m_pStartLaser->Update(a_Dt);
-}
-
-Emitter::~Emitter() {
-	if (m_pAnimator) delete m_pAnimator;
 }

@@ -123,6 +123,14 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 	m_Sprite.sprite->setPosition(m_Pos);
 }
 
+Block::~Block()
+{
+	cpShapeFree(m_BoxBounds.Top);
+	cpShapeFree(m_BoxBounds.Bottom);
+	cpShapeFree(m_BoxBounds.Left);
+	cpShapeFree(m_BoxBounds.Right);
+}
+
 void Block::Update(float a_dt) {
 	if (m_pAnimator) m_pAnimator->Update(a_dt);
 }

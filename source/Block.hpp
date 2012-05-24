@@ -22,6 +22,7 @@ public:
 		BLOCK_END
 	};
 	Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector2f a_Pos);
+	~Block();
 	//
 	void SetOutput(int a_block);
 	const int GetOutput();
