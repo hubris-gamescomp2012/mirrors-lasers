@@ -101,7 +101,7 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 	cpShapeSetFriction(m_BoxBounds.Top, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Top);
 	//bottom
-	m_BoxBounds.Bottom = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y + sprSize.y), cpv(a_Pos.x + sprSize.x, a_Pos.y + sprSize.y), 1);
+	m_BoxBounds.Bottom = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y), cpv(a_Pos.x, a_Pos.y), 1);
 	m_BoxBounds.Bottom->collision_type = SURFACE_BOTTOM;
 	m_BoxBounds.Bottom->data = this;
 	cpShapeSetFriction(m_BoxBounds.Bottom, 0.5);
