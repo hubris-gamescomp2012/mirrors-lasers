@@ -1,6 +1,7 @@
 #include "Laser.hpp"
 #include "Helpers.hpp"
 #include "Defs.hpp"
+#include "Animator.hpp"
 
 #include <SFML\Graphics\Sprite.hpp>
 #include <SFML\Graphics\Texture.hpp>
@@ -15,8 +16,13 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 ,	m_MaxLength(MAX_LASER_DIST)
 ,	m_Space(a_Space)
 ,	m_FacingDir(1,0)
+,	m_pAnimator(NULL)
+,	m_endDrawn(false)
 {
 	m_resMgr.CreateSprite("media/laser_middle_8x8.png", &m_Sprite);
+	m_resMgr.CreateSprite("media/End_laser_32x32.png", &m_endSprite);
+	m_pAnimator = new Animator(m_endSprite, 32, 32, 3, 8, 10, 24);
+
 	m_Sprite.sprite->setPosition(a_StartPos);
 	m_Sprite.sprite->setOrigin(0,4);
 	m_Sprite.sprite->setRotation(VectorToAngle(m_FacingDir));
@@ -42,7 +48,9 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 
 Laser::~Laser()
 {
+	delete m_pAnimator;
 	Hide();
+	m_resMgr.DeleteSprite(m_endSprite.ID);
 }
 
 Laser* Laser::GetNextSegment()
@@ -96,6 +104,11 @@ void Laser::Update(float a_Dt)
 			sf::Vector2f diff = m_EndPos - m_StartPos;
 			float newSize = GetVectorMagnitude(diff);
 			m_Sprite.sprite->setScale(newSize / baseSize, 1);
+
+			if (m_endDrawn) {
+				m_resMgr.RemoveDrawableSprite(&m_endSprite);
+				m_endDrawn = false;
+			}
 		}
 		else if(m_CurLength > m_MaxLength)
 		{
@@ -107,6 +120,18 @@ void Laser::Update(float a_Dt)
 			//update sprite
 			float baseSize = float(m_Sprite.sprite->getTexture()->getSize().x);
 			m_Sprite.sprite->setScale(m_CurLength / baseSize, 1);
+
+			//Show the end sprite
+			if (!m_endDrawn) {
+				m_resMgr.AddDrawableSprite(&m_endSprite);
+				m_endDrawn = true;
+			}			
+		}
+
+		if (m_endDrawn) {
+			//m_endSprite.sprite->setPosition(m_Sprite.sprite->getPosition().x+m_Sprite.sprite->getScale().x,m_Sprite.sprite->getPosition().y);
+			m_endSprite.sprite->setPosition(hitPoint.x-8,hitPoint.y-16);
+			if (m_pAnimator) m_pAnimator->Update(a_Dt);
 		}
 	}
 }

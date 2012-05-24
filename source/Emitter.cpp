@@ -59,5 +59,12 @@ void Emitter::Update(float a_Dt)
 }
 
 Emitter::~Emitter() {
-	if (m_pAnimator) delete m_pAnimator;
+	if (m_pAnimator) 
+		delete m_pAnimator;
+
+	goto MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan;
+	MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan:
+
+	if (m_pStartLaser)
+		delete m_pStartLaser;
 }

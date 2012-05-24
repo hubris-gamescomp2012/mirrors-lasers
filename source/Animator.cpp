@@ -13,6 +13,8 @@ Animator::Animator(SpriteID& a_sprite, int a_width, int a_height, int a_rows, in
 ,	m_sprite(a_sprite)
 ,	m_currentFrame(0)
 {
+	sf::IntRect textRect(0, 0, m_width, m_height);
+	m_sprite.sprite->setTextureRect(textRect);
 }
 
 void Animator::Update(float a_dt) {

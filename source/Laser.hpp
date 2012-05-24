@@ -7,6 +7,8 @@
 #define LASER_VELOCITY 1000.f
 #define MAX_LASER_DIST 2000.f
 
+class Animator;
+
 class Laser : public GameObject
 {
 public:
@@ -33,6 +35,9 @@ private:
 	Laser* m_pNextChainSegment;
 	//
 	cpSpace& m_Space;
+	Animator* m_pAnimator;
+	SpriteID m_endSprite;
+	bool m_endDrawn;
 	//
 };
 
