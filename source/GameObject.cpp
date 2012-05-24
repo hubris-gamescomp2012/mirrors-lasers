@@ -51,21 +51,13 @@ void GameObject::SetPosition(sf::Vector2f a_NewPos)
 
 void GameObject::SetPositionCenter(float a_X, float a_Y)
 {
-	if(m_pBody && m_Sprite.sprite)
-	{
-		m_pBody->p.x = a_X;
-		m_pBody->p.y = a_Y;
-	}
-	else if(m_Sprite.sprite)
-	{
-		sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
-		m_Sprite.sprite->setPosition(a_X - sprSize.x/2, a_Y - sprSize.y/2);
-	}
+	sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
+	SetPosition(a_X - sprSize.x/2, a_Y - sprSize.y/2);
 }
 
 void GameObject::SetPositionCenter(sf::Vector2f a_NewPos)
 {
-	SetPosition(a_NewPos.x, a_NewPos.y);
+	SetPositionCenter(a_NewPos.x, a_NewPos.y);
 }
 
 void GameObject::Update(float a_Dt)
