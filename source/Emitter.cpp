@@ -62,15 +62,31 @@ void Emitter::ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions) {
 	m_pStartLaser->SetCatchers(a_catcherPositions);
 }
 
-Emitter::~Emitter() {
+Emitter::~Emitter()
+{
+	//clear bounding box
+	cpShapeFree(m_BoxBounds.Top);
+	cpShapeFree(m_BoxBounds.Bottom);
+	cpShapeFree(m_BoxBounds.Left);
+	cpShapeFree(m_BoxBounds.Right);
+
+	//clear laser
+	Laser* pCurLaser = m_pStartLaser;
+	while(pCurLaser)
+	{
+		m_resMgr.RemoveDrawableSprite(pCurLaser->GetSprite());
+		pCurLaser = pCurLaser->GetNextSegment();
+		delete pCurLaser;
+	}
+
+	//clear anim
+
 	if (m_pAnimator) 
 		delete m_pAnimator;
 
 	goto MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan;
-	MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan:
-
-	if (m_pStartLaser)
-		delete m_pStartLaser;
+	MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan:{}
+	//you're so funny
 }
 
 bool Emitter::GetWon() {
