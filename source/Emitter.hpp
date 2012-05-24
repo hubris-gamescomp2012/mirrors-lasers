@@ -2,6 +2,7 @@
 #define EMITTER_HPP
 
 #include "GameObject.hpp"
+#include "Defs.hpp"
 
 class Laser;
 class Animator;
@@ -18,6 +19,7 @@ private:
 	cpSpace& m_Space;
 	Animator* m_pAnimator;
 	//
+	StaticRigidQuad m_BoxBounds;
 };
 
 #endif	//EMITTER_HPP
