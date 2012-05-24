@@ -12,16 +12,16 @@ class Animator;
 class Laser : public GameObject
 {
 public:
-	Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPos);
+	Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPos, sf::Vector2f a_FacingDir = sf::Vector2f(1,-1));
 	~Laser();
 	virtual void Update(float a_Dt);
 	//
+	void ExtendNewSegment(sf::Vector2f a_NewDir);
 	Laser* GetNextSegment();
 	Laser* GetPreviousSegment();
 	//
-	void Bounce();
-	//
 	void SetFacingDir(sf::Vector2f a_NewDir);
+	//virtual void SetPosition(sf::Vector2f a_NewDir);
 	//
 private:
 	sf::Vector2f m_StartPos;
@@ -31,12 +31,13 @@ private:
 	//
 	sf::Vector2f m_FacingDir;
 	//
-	Laser* m_pPreviousSegment;
 	Laser* m_pNextChainSegment;
+	Laser* m_pPreviousSegment;
 	//
 	cpSpace& m_Space;
 	Animator* m_pAnimator;
 	SpriteID m_endSprite;
+	SpriteID m_reflectSprite;
 	bool m_endDrawn;
 	//
 };

@@ -42,11 +42,11 @@ public:
 	//
 	sfg::Button::Ptr m_pQuitMenuButton;
 	//
-	float GetLaserRot();
-	void SetLaserRot(float a_rot);
+	void SetCursor(Cursor* a_pNewCursor);
 	//
 private:
 	Player* m_pPlayer;
+	Cursor* m_pCursor;
 	std::vector<Block*> m_blocks;
 	std::vector<Emitter*> Emitters;
 	std::vector<Catcher*> Catchers;
@@ -59,10 +59,6 @@ private:
 	cpSpace* m_pSpace;	//chipmunk physworld
 	StaticRigidQuad m_WorldBounds;	//world boundaries
 	//
-	int startX;
-	int startY;
-
-	float laserRotation;
 };
 
 #endif	//GAME_INST_HPP

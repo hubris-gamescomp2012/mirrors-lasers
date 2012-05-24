@@ -44,6 +44,11 @@ void GameObject::SetPosition(float a_X, float a_Y)
 	}
 }
 
+void GameObject::SetPosition(sf::Vector2f a_NewPos)
+{
+	SetPosition(a_NewPos.x, a_NewPos.y);
+}
+
 void GameObject::Update(float a_Dt)
 {
 	if(m_pBody && m_Sprite.sprite)
@@ -71,4 +76,17 @@ void GameObject::Hide()
 void GameObject::Show()
 {
 	m_resMgr.AddDrawableSprite(&m_Sprite);
+}
+
+GameObject::Type GameObject::GetType()
+{
+	return MyType;
+}
+
+sf::Vector2f GameObject::GetPosition()
+{
+	sf::Vector2f out(0,0);
+	if(m_Sprite.sprite)
+		out = m_Sprite.sprite->getPosition();
+	return out;
 }

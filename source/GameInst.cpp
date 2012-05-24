@@ -5,6 +5,7 @@
 #include "Renderer.hpp"
 #include "Player.hpp"
 #include "Emitter.hpp"
+#include "Cursor.hpp"
 
 #include "Defs.hpp"
 #include "GameInst_callbacks.hpp"
@@ -20,10 +21,10 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 ,	m_Running(false)
 ,	m_Renderer(a_Renderer)
 ,	m_pQuitMenuButton(sfg::Button::Create("Quit to Main Menu"))
-,	laserRotation(2.5f)
 ,	m_ResMgr(a_ResMgr)
 ,	m_tLeftPhysUpdate(PHYS_UPDATE_INTERVAL)
 	//
+,	m_pCursor(NULL)
 {
 	//grab the screen dimensions
 	sf::Vector2f windowDim = m_GUIMgr.GetWindowDim();
@@ -212,20 +213,23 @@ void GameInst::Update(float a_dt)
 		cpSpaceStep(m_pSpace, a_dt);
 
 		//update player
+		if(m_pCursor)
+		{
+			m_pPlayer->SetRedirectDir( VectorNormalise(m_pCursor->GetPosition() - m_pPlayer->GetPosition()) );
+		}
 		m_pPlayer->Update(a_dt);
 
-		//update emitters (emitters update their own laser chains)
+		//update emitters (emitters update their individual laser chains)
 		for (auto it = Emitters.begin(); it != Emitters.end();++it)
 		{
 			(*it)->Update(a_dt);
-			//
 		}
 		
 		//update blocks
 		for (auto it = m_blocks.begin(); it != m_blocks.end();++it)
 		{
 			(*it)->Update(a_dt);
-		}		
+		}
 	}
 }
 
@@ -234,10 +238,7 @@ void GameInst::UpdateGUISizes()
 	//
 }
 
-float GameInst::GetLaserRot() {
-	return laserRotation;
-}
-
-void GameInst::SetLaserRot(float a_rot) {
-	laserRotation = a_rot;
+void GameInst::SetCursor(Cursor* a_pNewCursor)
+{
+	m_pCursor = a_pNewCursor;
 }

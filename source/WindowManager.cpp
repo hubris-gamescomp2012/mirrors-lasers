@@ -18,7 +18,7 @@ WindowManager::WindowManager()
 	if (Icon.loadFromFile("media/robicon.jpg") && m_pSFMLRenderWindow)
 		m_pSFMLRenderWindow->setIcon(128, 128, Icon.getPixelsPtr());
 	m_pSFMLRenderWindow->resetGLStates();
-	m_pSFMLRenderWindow->setVerticalSyncEnabled(true);
+	//m_pSFMLRenderWindow->setVerticalSyncEnabled(true);
 	//
 	m_pInputHandler = new InputHandler();
 }

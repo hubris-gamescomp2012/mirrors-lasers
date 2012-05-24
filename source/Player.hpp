@@ -10,11 +10,14 @@ public:
 	virtual void Update(float a_Dt);
 	//
 	float GetRedirectAngle();
+	void SetRedirectDir(sf::Vector2f a_NewDir);
+	sf::Vector2f GetRedirectDir();
 	void SetOnGround();
 	//
 private:
 	bool m_OnGround;
 	float RedirectAngle;
+	sf::Vector2f m_RedirectDir;
 	//
 };
 
