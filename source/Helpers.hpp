@@ -17,6 +17,10 @@ std::string Num2Str(short a_In);
 float GetAngleFromDir(sf::Vector2f a_StartPos, sf::Vector2f a_EndPos);
 float GetAngleFromDir(sf::Vector2f a_Dir);
 
+sf::Vector2f AngleToVector(float angle);
+
+float VectorToAngle(sf::Vector2f vector);
+
 float GetVectorMagnitude(sf::Vector2f a_Vec);
 
 #endif	//HELPERS_HPP

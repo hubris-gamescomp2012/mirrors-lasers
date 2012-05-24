@@ -19,12 +19,15 @@ public:
 	//
 	void Bounce();
 	//
-	sf::Vector2f FacingDir;
+	void SetFacingDir(sf::Vector2f a_NewDir);
+	//
 private:
 	sf::Vector2f m_StartPos;
 	sf::Vector2f m_EndPos;
 	float m_CurLength;
 	float m_MaxLength;
+	//
+	sf::Vector2f m_FacingDir;
 	//
 	Laser* m_pPreviousSegment;
 	Laser* m_pNextChainSegment;
