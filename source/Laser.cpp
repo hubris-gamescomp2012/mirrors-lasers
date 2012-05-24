@@ -56,9 +56,10 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 
 Laser::~Laser()
 {
-	delete m_pAnimator;
 	Hide();
+	if (m_endDrawn) m_resMgr.RemoveDrawableSprite(&m_endSprite);
 	m_resMgr.DeleteSprite(m_endSprite.ID);
+	delete m_pAnimator;
 }
 
 Laser* Laser::GetNextSegment()

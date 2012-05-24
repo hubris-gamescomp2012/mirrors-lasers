@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <SFML/System/Vector2.hpp>
-
+#include <SFML/Graphics/Image.hpp>
 #include <SFGUI/Button.hpp>
 #include <SFGUI/Window.hpp>
 #include <SFGUI/Notebook.hpp>
@@ -61,6 +61,11 @@ private:
 	StaticRigidQuad m_WorldBounds;	//world boundaries
 	//
 	std::vector<sf::Vector2f> catcherPositions;
+	float laserRotation;
+	bool m_won;
+	float m_winTimer;
+	sfg::Image::Ptr m_winImage;
+	sf::Image m_winImageSource;
 };
 
 #endif	//GAME_INST_HPP

@@ -76,9 +76,10 @@ Emitter::~Emitter()
 	Laser* pCurLaser = m_pStartLaser;
 	while(pCurLaser)
 	{
+		Laser* laserPtr = pCurLaser;
 		m_resMgr.RemoveDrawableSprite(pCurLaser->GetSprite());
 		pCurLaser = pCurLaser->GetNextSegment();
-		delete pCurLaser;
+		delete laserPtr;
 	}
 
 	//clear anim
