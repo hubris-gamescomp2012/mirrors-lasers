@@ -23,6 +23,8 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 ,	laserRotation(2.5f)
 ,	m_ResMgr(a_ResMgr)
 ,	m_tLeftPhysUpdate(PHYS_UPDATE_INTERVAL)
+,	m_won(false)
+,	m_winTimer(0.0f)
 	//
 {
 	//grab the screen dimensions
@@ -41,6 +43,10 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 	m_pQuitMenuButton->Show(false);
 	m_GUIMgr.AddWidget(m_pQuitMenuButton);
 	Widgets.push_back(m_pQuitMenuButton);
+
+	m_winImageSource.loadFromFile("media/wintext.png");
+
+	m_winImage = sfg::Image::Create(m_winImageSource);
 }
 
 bool GameInst::Start()
@@ -49,9 +55,6 @@ bool GameInst::Start()
 	
 	// Load the level
 	LoadLevel();
-
-	//enable user input to the player
-	m_pPlayer->SetInputHandler(m_pInputHandler);
 
 	return true;
 }
@@ -153,6 +156,9 @@ void GameInst::LoadLevel()
 	}
 	file.close();
 
+	//enable user input to the player
+	m_pPlayer->SetInputHandler(m_pInputHandler);
+
 	//rebuild static level geometry
 	//cpSpaceRehashStatic();
 }
@@ -163,6 +169,7 @@ void GameInst::UnloadLevel()
 	for (auto it = m_blocks.begin(); it != m_blocks.end();)
 	{
 		m_Renderer.RemoveDrawableSprite((*it)->GetSprite());
+		delete *it;
 		it = m_blocks.erase(it);
 	}
 
@@ -227,16 +234,22 @@ void GameInst::Update(float a_dt)
 			(*it)->ParseCatchers(catcherPositions);
 			
 			if ((*it)->GetWon()) {
-				static bool won = false;
-				if (!won) {
-					sf::Image image;
-					image.loadFromFile("media/wintext.png");
-					sfg::Image::Ptr winText = sfg::Image::Create(image);
-					winText->SetPosition(sf::Vector2f(512-(float)image.getSize().x/2,386-(float)image.getSize().y/2));
-
-					m_GUIMgr.AddWidget(winText);
+				if (!m_won) {
+					m_winImage->SetPosition(sf::Vector2f(512-(float)m_winImageSource.getSize().x/2,386-(float)m_winImageSource.getSize().y/2));
+					m_GUIMgr.AddWidget(m_winImage);
 					//Widgets.push_back(winText);
-					won = true;
+					m_won = true;
+				} else {
+					m_winTimer += a_dt;
+					if (m_winTimer > 3.0f) {
+						m_winImage->SetPosition(sf::Vector2f(2048,2048));
+						m_GUIMgr.RemoveWidget(m_winImage);
+						m_won = false;
+						m_winTimer = 0.0f;
+						UnloadLevel();
+						LoadLevel();
+						return;
+					}
 				}
 			}
 		}
