@@ -58,6 +58,10 @@ void Emitter::Update(float a_Dt)
 		m_pStartLaser->Update(a_Dt);
 }
 
+void Emitter::ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions) {
+	m_pStartLaser->SetCatchers(a_catcherPositions);
+}
+
 Emitter::~Emitter() {
 	if (m_pAnimator) 
 		delete m_pAnimator;
@@ -67,4 +71,8 @@ Emitter::~Emitter() {
 
 	if (m_pStartLaser)
 		delete m_pStartLaser;
+}
+
+bool Emitter::GetWon() {
+	return m_pStartLaser->GetWon();
 }

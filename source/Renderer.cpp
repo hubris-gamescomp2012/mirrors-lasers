@@ -49,6 +49,7 @@ bool Renderer::Render(float a_dt)
 
 	//display the screen
 	m_WindowMgr.Display(a_dt);
+
 	return false;
 }
 
