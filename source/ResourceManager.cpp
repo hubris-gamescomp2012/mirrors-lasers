@@ -91,9 +91,11 @@ bool ResourceManager::CreateSprite( std::string FilePath, SpriteID* a_ppOut )
 	//if(a_pSubRect)
 	//	sprite->set(*a_pSubRect);
 	//sf::Vector2f size = texture->getSize();
-	if(a_ppOut)
+	if(a_ppOut) {
 		a_ppOut->sprite = sprite;
-	
+		a_ppOut->ID = ID;
+	}
+
 	//sprite->setOrigin(16,16);
 
 	//now scale the sprite so that it matches the tile size
