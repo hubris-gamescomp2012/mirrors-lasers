@@ -58,6 +58,10 @@ void Emitter::Update(float a_Dt)
 		m_pStartLaser->Update(a_Dt);
 }
 
+void Emitter::ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions) {
+	m_pStartLaser->SetCatchers(a_catcherPositions);
+}
+
 Emitter::~Emitter()
 {
 	//clear bounding box
@@ -76,10 +80,15 @@ Emitter::~Emitter()
 	}
 
 	//clear anim
+
 	if (m_pAnimator) 
 		delete m_pAnimator;
 
 	goto MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan;
 	MilesPleaseRememberToDeleteStuffThatYouCreateWithTheNewCommandAndPleaseRefrainFromUsingGotosThanksRegardsJohan:{}
 	//you're so funny
+}
+
+bool Emitter::GetWon() {
+	return m_pStartLaser->GetWon();
 }

@@ -1,7 +1,7 @@
 #include "Laser.hpp"
 #include "Helpers.hpp"
-#include "Defs.hpp"
 #include "Animator.hpp"
+#include <iostream>
 
 #include <SFML\Graphics\Sprite.hpp>
 #include <SFML\Graphics\Texture.hpp>
@@ -18,6 +18,9 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 ,	m_FacingDir(1,0)
 ,	m_pAnimator(NULL)
 ,	m_endDrawn(false)
+,	m_endDrawnHack(false)
+,	m_won(false)
+//,	m_catcherPositions(NULL)
 {
 	m_resMgr.CreateSprite("media/laser_middle_8x8.png", &m_Sprite);
 	m_resMgr.CreateSprite("media/End_laser_32x32.png", &m_endSprite);
@@ -26,6 +29,7 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 	m_Sprite.sprite->setPosition(a_StartPos);
 	m_Sprite.sprite->setOrigin(0,4);
 	m_Sprite.sprite->setRotation(VectorToAngle(m_FacingDir));
+
 	//
 	
 	//create the physbody
@@ -85,7 +89,7 @@ void Laser::Update(float a_Dt)
 	//grab the absolute dist
 	m_MaxLength = float(min( cpSegmentQueryHitDist(cpStartPos, cpEndPos, info), MAX_LASER_DIST ));
 
-	cpVect hitPoint = cpSegmentQueryHitPoint(cpStartPos, cpEndPos, info);
+	m_hitPoint = cpSegmentQueryHitPoint(cpStartPos, cpEndPos, info);
 
 	//check to see if we hit the player
 	if(true)
@@ -105,10 +109,12 @@ void Laser::Update(float a_Dt)
 			float newSize = GetVectorMagnitude(diff);
 			m_Sprite.sprite->setScale(newSize / baseSize, 1);
 
-			if (m_endDrawn) {
+			if (m_endDrawn && !m_endDrawnHack) {
 				m_resMgr.RemoveDrawableSprite(&m_endSprite);
 				m_endDrawn = false;
 			}
+
+			m_endDrawnHack = false;
 		}
 		else if(m_CurLength > m_MaxLength)
 		{
@@ -125,12 +131,13 @@ void Laser::Update(float a_Dt)
 			if (!m_endDrawn) {
 				m_resMgr.AddDrawableSprite(&m_endSprite);
 				m_endDrawn = true;
-			}			
+			}	
+			m_endDrawnHack = true;
 		}
 
 		if (m_endDrawn) {
 			//m_endSprite.sprite->setPosition(m_Sprite.sprite->getPosition().x+m_Sprite.sprite->getScale().x,m_Sprite.sprite->getPosition().y);
-			m_endSprite.sprite->setPosition(hitPoint.x-8,hitPoint.y-16);
+			m_endSprite.sprite->setPosition((float)m_hitPoint.x-4,(float)m_hitPoint.y-16);
 			if (m_pAnimator) m_pAnimator->Update(a_Dt);
 		}
 	}
@@ -182,4 +189,23 @@ void Laser::Bounce()
 		++iter;
 	}
 	*/
+}
+
+void Laser::SetCatchers(std::vector<sf::Vector2f>& a_catcherPositions) {
+	// Check win condition
+	if (m_CurLength > m_MaxLength) {
+		for (auto it = a_catcherPositions.begin(); it != a_catcherPositions.end(); ++it) {
+			if (it->x - 16 < (float)m_hitPoint.x &&
+				it->x + 32 > (float)m_hitPoint.x &&
+				it->y - 16 < (float)m_hitPoint.y &&
+				it->y + 32 > (float)m_hitPoint.y) {
+					m_won = true;
+					break;
+			}
+		}
+	}
+}
+
+bool Laser::GetWon() {
+	return m_won;
 }

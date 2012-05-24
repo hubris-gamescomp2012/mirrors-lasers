@@ -3,6 +3,8 @@
 
 #include "GameObject.hpp"
 #include <vector>
+#include <SFML/System/Vector2.hpp>
+#include "Defs.hpp"
 
 #define LASER_VELOCITY 1000.f
 #define MAX_LASER_DIST 2000.f
@@ -22,6 +24,10 @@ public:
 	void Bounce();
 	//
 	void SetFacingDir(sf::Vector2f a_NewDir);
+
+	void SetCatchers(std::vector<sf::Vector2f>& a_catcherPositions);
+
+	bool GetWon();
 	//
 private:
 	sf::Vector2f m_StartPos;
@@ -38,6 +44,11 @@ private:
 	Animator* m_pAnimator;
 	SpriteID m_endSprite;
 	bool m_endDrawn;
+	bool m_endDrawnHack; // Yay a hack!
+	cpVect m_hitPoint;
+	bool m_won;
+
+	//std::vector<sf::Vector2f>* m_catcherPositions;
 	//
 };
 
