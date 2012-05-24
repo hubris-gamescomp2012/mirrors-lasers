@@ -13,9 +13,19 @@ public:
 	//
 	virtual void Update(float a_Dt);
 	//
+	void SetRotationAngle(float a_Angle);	//radians
+	float GetRotationAngle();
+	//
 private:
-	cpShape* m_pLineSegment;
+	cpShape* m_pReflectLine;
+	cpBody* m_pReflectBody;
 	//
 };
+
+/*
+cpFloat cpBodyGetAngle(const cpBody *body)
+void cpBodySetAngle(cpBody *body, cpFloat a)
+//rotation in radians
+*/
 
 #endif	//MIRROR_HPP
