@@ -7,6 +7,7 @@
 #include "Defs.hpp"
 
 #include <vector>
+#include <SFML/System/Vector2.hpp>
 
 #include <SFGUI/Button.hpp>
 #include <SFGUI/Window.hpp>
@@ -61,7 +62,7 @@ private:
 	//
 	int startX;
 	int startY;
-
+	std::vector<sf::Vector2f> catcherPositions;
 	float laserRotation;
 };
 
