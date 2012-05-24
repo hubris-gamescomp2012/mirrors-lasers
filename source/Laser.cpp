@@ -14,11 +14,12 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 ,	m_CurLength(0)
 ,	m_MaxLength(MAX_LASER_DIST)
 ,	m_Space(a_Space)
+,	m_FacingDir(1,0)
 {
 	m_resMgr.CreateSprite("media/laser_middle_8x8.png", &m_Sprite);
 	m_Sprite.sprite->setPosition(a_StartPos);
-	m_Sprite.sprite->setOrigin(0,16);
-	m_Sprite.sprite->setRotation(GetAngleFromDir(FacingDir));
+	m_Sprite.sprite->setOrigin(0,4);
+	m_Sprite.sprite->setRotation(VectorToAngle(m_FacingDir));
 	//
 	
 	//create the physbody
@@ -60,30 +61,30 @@ void Laser::Update(float a_Dt)
 	cpVect cpStartPos;
 	cpStartPos.x = m_StartPos.x;
 	cpStartPos.y = m_StartPos.y;
-	cpVect cpEndPos = cpStartPos;
-	sf::Vector2f sfEndPos = m_StartPos + FacingDir * MAX_LASER_DIST;
-	cpEndPos.x += sfEndPos.x;
-	cpEndPos.y += sfEndPos.y;
+	sf::Vector2f addVector = m_FacingDir * MAX_LASER_DIST;
+	sf::Vector2f sfEndPos = m_StartPos + addVector;
+	cpVect cpEndPos;
+	cpEndPos.x = sfEndPos.x;
+	cpEndPos.y = sfEndPos.y;
 	cpSegmentQueryInfo info;
 	info.n = cpv(0,0);
 	info.t = 0;
 	info.shape = NULL;
 
-	//grab layer and group info 
-	cpLayers layers;
-
 	//cast ray
-	//cpShape* collided = cpSpaceSegmentQueryFirst(&m_Space, cpStartPos, cpEndPos, 
+	cpShape* collided = cpSpaceSegmentQueryFirst(&m_Space, cpStartPos, cpEndPos, CP_ALL_LAYERS, CP_NO_GROUP, &info);
 
 	//grab the absolute dist
-	//m_MaxLength = float(cpSegmentQueryHitDist(cpStartPos, cpEndPos, info));
+	m_MaxLength = float(min( cpSegmentQueryHitDist(cpStartPos, cpEndPos, info), MAX_LASER_DIST ));
+
+	cpVect hitPoint = cpSegmentQueryHitPoint(cpStartPos, cpEndPos, info);
 
 	//extend or reduce the laser to the max
 	if(m_CurLength < m_MaxLength)
 	{
 		//update end position
 		//fuck you, lasers have velocity (but only when they're growing)
-		sf::Vector2f newDist = FacingDir * LASER_VELOCITY * a_Dt;
+		sf::Vector2f newDist = m_FacingDir * LASER_VELOCITY * a_Dt;
 		m_EndPos += newDist;
 		m_CurLength += GetVectorMagnitude(newDist);
 
@@ -96,14 +97,20 @@ void Laser::Update(float a_Dt)
 	else if(m_CurLength > m_MaxLength)
 	{
 		//update end position
-		m_EndPos = m_StartPos + FacingDir * m_MaxLength;
+		m_EndPos = m_StartPos + m_FacingDir * m_MaxLength;
 		sf::Vector2f diff = m_EndPos - m_StartPos;
 		m_CurLength = GetVectorMagnitude(diff);
 
-		//udpate sprite
+		//update sprite
 		float baseSize = float(m_Sprite.sprite->getTexture()->getSize().x);
 		m_Sprite.sprite->setScale(m_CurLength / baseSize, 1);
 	}
+}
+
+void Laser::SetFacingDir(sf::Vector2f a_NewDir)
+{
+	m_FacingDir = a_NewDir;
+	m_Sprite.sprite->setRotation(VectorToAngle(m_FacingDir));
 }
 
 void Laser::Bounce()

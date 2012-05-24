@@ -3,7 +3,8 @@
 
 #include "InputHandler.hpp"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <iostream>
 
 GameObject::GameObject(ResourceManager& a_ResMgr, cpSpace& a_Space)
@@ -31,10 +32,11 @@ SpriteID* GameObject::GetSprite()
 
 void GameObject::SetPosition(float a_X, float a_Y)
 {
-	if(m_pBody)
+	if(m_pBody && m_Sprite.sprite)
 	{
-		m_pBody->p.x = a_X;
-		m_pBody->p.y = a_Y;
+		sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
+		m_pBody->p.x = a_X + sprSize.x/2;
+		m_pBody->p.y = a_Y + sprSize.y/2;
 	}
 	else if(m_Sprite.sprite)
 	{
@@ -44,8 +46,11 @@ void GameObject::SetPosition(float a_X, float a_Y)
 
 void GameObject::Update(float a_Dt)
 {
-	if(m_pBody)
-		m_Sprite.sprite->setPosition(float(m_pBody->p.x), float(m_pBody->p.y));
+	if(m_pBody && m_Sprite.sprite)
+	{
+		sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
+		m_Sprite.sprite->setPosition(float(m_pBody->p.x) - sprSize.x / 2, float(m_pBody->p.y) - sprSize.y / 2);
+	}
 }
 
 void GameObject::SetInputHandler(InputHandler* a_pInputHandler)

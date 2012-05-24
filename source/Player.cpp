@@ -6,6 +6,8 @@
 #include "Defs.hpp"
 
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 :	GameObject(a_ResMgr, a_Space)
@@ -17,9 +19,8 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 	m_resMgr.CreateSprite("media/player_body_64x64.png", &m_Sprite);
 
 	//create the physbody
-	cpFloat width = 64;
-	cpFloat height = 64;
-	cpFloat radius = 32;
+	sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
+	cpFloat radius = sprSize.x/2;
 	cpFloat mass = 1;
 
 	// The moment of inertia is like mass for rotation
@@ -36,7 +37,7 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 	// You can create multiple collision shapes that point to the same body.
 	// They will all be attached to the body and move around to follow it.
 	m_pShape = cpSpaceAddShape(&a_Space, cpCircleShapeNew(m_pBody, radius, cpv(0,0)));
-	cpShapeSetFriction(m_pShape, 0.7);
+	cpShapeSetFriction(m_pShape, 0);
 	m_pShape->data = this;
 
 	cpShapeSetCollisionType(m_pShape, COLLIDABLE::PLAYER);
