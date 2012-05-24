@@ -26,14 +26,17 @@ public:
 	//
 	virtual void SetPosition(float a_X, float a_Y);
 	//
-	std::vector<floatingMirror> SpareMirrors;
-	//
 private:
 	bool m_OnGround;
 	float RedirectAngle;
 	sf::Vector2f m_RedirectDir;
 	//
 	Mirror* m_pMirror;
+	floatingMirror SpareMirrorOne;
+	floatingMirror SpareMirrorTwo;
+	floatingMirror SpareMirrorThree;
+	//
+	void UpdateFloatingMirrors(float a_Dt);
 	//
 };
 

@@ -11,15 +11,16 @@
 Mirror::Mirror(ResourceManager& a_ResMgr, cpSpace& a_Space)
 :	GameObject(a_ResMgr, a_Space)
 {
-	/*
 	//create le sprite
-	m_resMgr.CreateSprite("media/mirror.png", &m_Sprite);
+	m_resMgr.CreateSprite("media/mirror2.png", &m_Sprite);
+	m_resMgr.AddDrawableSprite(&m_Sprite);
 	sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
+	m_Sprite.sprite->setOrigin(sprSize.x/2,sprSize.y/2);
 	
 	//moment of inertia (rotation thing)
 	cpFloat length = m_Sprite.sprite->getTexture()->getSize().x;
 	cpFloat mass = 1;
-	cpFloat moment = cpMomentForSegment(mass, cpv(0,0), cpv(0,0));
+	cpFloat moment = cpMomentForSegment(mass, cpv(0,0), cpv(0,length));
 
 	//---------------top
 	//create physbody
@@ -42,8 +43,6 @@ Mirror::Mirror(ResourceManager& a_ResMgr, cpSpace& a_Space)
 	m_pShape = cpSpaceAddShape( &a_Space, cpSegmentShapeNew(m_pBody, cpv(0,sprSize.y), cpv(sprSize.x,sprSize.y), 1) );
 	cpShapeSetFriction(m_pShape, 0);
 	m_pShape->data = this;
-	*/
-
 }
 
 Mirror::~Mirror()
@@ -70,9 +69,13 @@ void Mirror::SetRotationAngle(float a_Angle)
 	cpBodySetAngle(m_pReflectBody, cpFloat(a_Angle));
 
 	//rotate sprite
-	m_Sprite.sprite->setRotation( (a_Angle * 3.14159265f) / 180 );
+	m_Sprite.sprite->setRotation( (a_Angle * 180) / 3.14159265f );
 }
 
+//2pi r = 360 c
+//pi r = 180 c
+//1 r = 180/pi c
+//pi / 180 r = 1 c
 float Mirror::GetRotationAngle()
 {
 	return float(cpBodyGetAngle(m_pReflectBody));
