@@ -10,6 +10,8 @@ Emitter::Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_Sta
 ,	m_Space(a_Space)
 ,	m_pAnimator(NULL)
 {
+	MyType = EMITTER;
+	//
 	m_resMgr.CreateSprite("media/Transmitter_on_32x32.png", &m_Sprite);
 	sf::Vector2u sprSize = sf::Vector2u(32, 32);
 	m_pAnimator = new Animator(m_Sprite, 32, 32, 3, 8, 10, 24);

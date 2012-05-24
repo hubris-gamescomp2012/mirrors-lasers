@@ -8,6 +8,8 @@
 Cursor::Cursor(ResourceManager& a_ResMgr, cpSpace& a_Space)
 :	GameObject(a_ResMgr, a_Space)
 {
+	MyType = EMITTER;
+
 	//create a sprite
 	m_resMgr.CreateSprite("media/cursor.png", &m_Sprite);
 }
