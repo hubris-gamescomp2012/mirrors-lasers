@@ -79,31 +79,35 @@ void Laser::Update(float a_Dt)
 
 	cpVect hitPoint = cpSegmentQueryHitPoint(cpStartPos, cpEndPos, info);
 
-	//extend or reduce the laser to the max
-	if(m_CurLength < m_MaxLength)
+	//check to see if we hit the player
+	if(true)
 	{
-		//update end position
-		//fuck you, lasers have velocity (but only when they're growing)
-		sf::Vector2f newDist = m_FacingDir * LASER_VELOCITY * a_Dt;
-		m_EndPos += newDist;
-		m_CurLength += GetVectorMagnitude(newDist);
+		//extend or reduce the laser to the max
+		if(m_CurLength < m_MaxLength)
+		{
+			//update end position
+			//fuck you, lasers have velocity (but only when they're growing)
+			sf::Vector2f newDist = m_FacingDir * LASER_VELOCITY * a_Dt;
+			m_EndPos += newDist;
+			m_CurLength += GetVectorMagnitude(newDist);
 
-		//update sprite
-		float baseSize = float(m_Sprite.sprite->getTexture()->getSize().x);
-		sf::Vector2f diff = m_EndPos - m_StartPos;
-		float newSize = GetVectorMagnitude(diff);
-		m_Sprite.sprite->setScale(newSize / baseSize, 1);
-	}
-	else if(m_CurLength > m_MaxLength)
-	{
-		//update end position
-		m_EndPos = m_StartPos + m_FacingDir * m_MaxLength;
-		sf::Vector2f diff = m_EndPos - m_StartPos;
-		m_CurLength = GetVectorMagnitude(diff);
+			//update sprite
+			float baseSize = float(m_Sprite.sprite->getTexture()->getSize().x);
+			sf::Vector2f diff = m_EndPos - m_StartPos;
+			float newSize = GetVectorMagnitude(diff);
+			m_Sprite.sprite->setScale(newSize / baseSize, 1);
+		}
+		else if(m_CurLength > m_MaxLength)
+		{
+			//update end position
+			m_EndPos = m_StartPos + m_FacingDir * m_MaxLength;
+			sf::Vector2f diff = m_EndPos - m_StartPos;
+			m_CurLength = GetVectorMagnitude(diff);
 
-		//update sprite
-		float baseSize = float(m_Sprite.sprite->getTexture()->getSize().x);
-		m_Sprite.sprite->setScale(m_CurLength / baseSize, 1);
+			//update sprite
+			float baseSize = float(m_Sprite.sprite->getTexture()->getSize().x);
+			m_Sprite.sprite->setScale(m_CurLength / baseSize, 1);
+		}
 	}
 }
 
