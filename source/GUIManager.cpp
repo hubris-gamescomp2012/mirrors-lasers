@@ -63,6 +63,11 @@ void GUIManager::AddWidget(sfg::SharedPtr<sfg::Widget> a_Widget)
 	m_Desktop.Add(a_Widget);
 }
 
+void GUIManager::RemoveWidget(sfg::SharedPtr<sfg::Widget> a_Widget) 
+{
+	m_Desktop.Remove(a_Widget);
+}
+
 sfg::Desktop& GUIManager::GetDesktop()
 {
 	return m_Desktop;

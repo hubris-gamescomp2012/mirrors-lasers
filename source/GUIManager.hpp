@@ -28,6 +28,7 @@ public:
 	//
 	//void CreateTestWindow();
 	void AddWidget(sfg::SharedPtr<sfg::Widget> a_Widget);
+	void RemoveWidget(sfg::SharedPtr<sfg::Widget> a_Widget);
 	sfg::Desktop& GetDesktop();
 	//
 	void SetRenderer(Renderer* a_pRenderer);
