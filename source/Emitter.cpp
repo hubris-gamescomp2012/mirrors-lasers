@@ -11,11 +11,11 @@ Emitter::Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_Sta
 ,	m_pAnimator(NULL)
 {
 	m_resMgr.CreateSprite("media/Transmitter_on_32x32.png", &m_Sprite);
+	sf::Vector2u sprSize = sf::Vector2u(32, 32);
 	m_pAnimator = new Animator(m_Sprite, 32, 32, 3, 8, 10, 24);
 	m_Sprite.sprite->setPosition(a_StartPos);
 
 	float offSet = 0;
-	sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
 	//top
 	m_BoxBounds.Top = cpSegmentShapeNew(a_Space.staticBody, cpv(a_StartPos.x, a_StartPos.y), cpv(a_StartPos.x + sprSize.x, a_StartPos.y), 1);
 	m_BoxBounds.Top->collision_type = SURFACE_TOP;
@@ -41,7 +41,7 @@ Emitter::Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_Sta
 	cpShapeSetFriction(m_BoxBounds.Right, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Right);
 	
-	a_StartPos.y += 32;	//move it into the middle of the emitter
+	a_StartPos.y += 16;	//move it into the middle of the emitter
 	a_StartPos.x += 32;	//move it in front of the emitter
 	m_pStartLaser = new Laser(a_ResMgr, a_Space, a_StartPos);
 	//m_pStartLaser->SetFacingDir(sf::Vector2f(1,1));
