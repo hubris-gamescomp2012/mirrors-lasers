@@ -99,6 +99,7 @@ void Laser::Update(float a_Dt)
 	if(collided)
 		pGameObj = (GameObject*)collided->data;
 
+	/*
 	//check to see if we hit the player
 	Player* pPlayer = NULL;
 	bool colPlayer = false;
@@ -126,7 +127,7 @@ void Laser::Update(float a_Dt)
 			pCurLaser = pCurLaser->GetNextSegment();
 			delete pCurLaser;
 		}
-	}
+	}*/
 
 	//extend or reduce the laser to the max length
 	if(m_CurLength < m_MaxLength)
@@ -152,6 +153,7 @@ void Laser::Update(float a_Dt)
 	}
 	else if(m_CurLength > m_MaxLength)
 	{
+		bool colPlayer = false;
 		//update end position
 		m_EndPos = m_StartPos + m_FacingDir * m_MaxLength;
 		sf::Vector2f diff = m_EndPos - m_StartPos;
@@ -173,6 +175,7 @@ void Laser::Update(float a_Dt)
 		m_endDrawnHack = true;
 	}
 	
+	/*
 	//update reflected laser segment
 	if(pPlayer && m_pNextChainSegment)
 	{
@@ -196,6 +199,7 @@ void Laser::Update(float a_Dt)
 		if(m_pAnimator)
 			m_pAnimator->Update(a_Dt);
 	}
+	*/
 }
 
 void Laser::ExtendNewSegment(sf::Vector2f a_NewDir)
