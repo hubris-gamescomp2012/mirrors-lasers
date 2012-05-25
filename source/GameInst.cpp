@@ -217,6 +217,19 @@ void GameInst::Update(float a_dt)
 {
 	if(m_Running)
 	{
+		if (m_won) {
+			m_winTimer += a_dt;
+			if (m_winTimer > 3.0f) {
+				m_winImage->SetPosition(sf::Vector2f(2048,2048));
+				m_GUIMgr.RemoveWidget(m_winImage);
+				m_won = false;
+				m_winTimer = 0.0f;
+				UnloadLevel();
+				LoadLevel();
+				return;
+			}
+		}
+
 		//update physworld
 		/*m_tLeftPhysUpdate -= a_dt;
 		if(m_tLeftPhysUpdate < 0)
@@ -230,7 +243,20 @@ void GameInst::Update(float a_dt)
 		{
 			m_pPlayer->SetRedirectDir( VectorNormalise(m_pCursor->GetPosition() - m_pPlayer->GetPosition()) );
 		}
+		for (auto it = Emitters.begin(); it != Emitters.end();++it)
+		{
+			m_pPlayer->ParseEmitter(*it);
+		}
 		m_pPlayer->Update(a_dt);
+		m_pPlayer->ParseCatchers(catcherPositions);
+		if (m_pPlayer->GetWon()) {
+			if (!m_won) {
+				m_winImage->SetPosition(sf::Vector2f(512-(float)m_winImageSource.getSize().x/2,386-(float)m_winImageSource.getSize().y/2));
+				m_GUIMgr.AddWidget(m_winImage);
+				//Widgets.push_back(winText);
+				m_won = true;
+			}
+		}
 
 		//update emitters (emitters update their individual laser chains)
 		for (auto it = Emitters.begin(); it != Emitters.end();++it)
@@ -244,17 +270,6 @@ void GameInst::Update(float a_dt)
 					m_GUIMgr.AddWidget(m_winImage);
 					//Widgets.push_back(winText);
 					m_won = true;
-				} else {
-					m_winTimer += a_dt;
-					if (m_winTimer > 3.0f) {
-						m_winImage->SetPosition(sf::Vector2f(2048,2048));
-						m_GUIMgr.RemoveWidget(m_winImage);
-						m_won = false;
-						m_winTimer = 0.0f;
-						UnloadLevel();
-						LoadLevel();
-						return;
-					}
 				}
 			}
 		}

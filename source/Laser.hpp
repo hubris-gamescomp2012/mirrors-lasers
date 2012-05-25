@@ -21,17 +21,22 @@ public:
 	void ExtendNewSegment(sf::Vector2f a_NewDir);
 	Laser* GetNextSegment();
 	Laser* GetPreviousSegment();
+	void SetStartPos(sf::Vector2f a_startPos);
+	void BlockLaser(sf::Vector2f a_blockPos);
 	//
 	void SetFacingDir(sf::Vector2f a_NewDir);
 	//virtual void SetPosition(sf::Vector2f a_NewDir);
 	void SetCatchers(std::vector<sf::Vector2f>& a_catcherPositions);
 	bool GetWon();
+	sf::Vector2f GetHitPoint();
 	//
 private:
 	sf::Vector2f m_StartPos;
 	sf::Vector2f m_EndPos;
+	sf::Vector2f m_blockPos;
 	float m_CurLength;
 	float m_MaxLength;
+	bool m_laserBlocked;
 	//
 	sf::Vector2f m_FacingDir;
 	//

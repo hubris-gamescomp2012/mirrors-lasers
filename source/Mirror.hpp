@@ -4,6 +4,8 @@
 #include "GameObject.hpp"
 
 struct cpShape;
+class Laser;
+class Emitter;
 
 class Mirror: public GameObject
 {
@@ -15,10 +17,16 @@ public:
 	//
 	void SetRotationAngle(float a_Angle);	//radians
 	float GetRotationAngle();
+	void ParseEmitter(Emitter* a_emitter);
+	bool GetWon();
+	void ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions);
+	void BlockLaser(sf::Vector2f a_blockPos);
 	//
 private:
 	cpShape* m_pReflectLine;
 	cpBody* m_pReflectBody;
+	cpSpace& m_pSpace;
+	Laser* m_pLaser;
 	//
 };
 

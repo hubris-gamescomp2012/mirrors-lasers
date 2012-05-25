@@ -46,9 +46,13 @@ Emitter::Emitter(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_Sta
 	a_StartPos.y += 16;	//move it into the middle of the emitter
 	a_StartPos.x += 32;	//move it in front of the emitter
 	m_pStartLaser = new Laser(a_ResMgr, a_Space, a_StartPos);
-	//m_pStartLaser->SetFacingDir(sf::Vector2f(1,1));
+	m_pStartLaser->SetFacingDir(sf::Vector2f(1,0));
 	m_pStartLaser->Show();
 	
+}
+
+sf::Vector2f Emitter::GetHitPoint() {
+	return m_pStartLaser->GetHitPoint();
 }
 
 void Emitter::Update(float a_Dt)
@@ -62,6 +66,10 @@ void Emitter::Update(float a_Dt)
 
 void Emitter::ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions) {
 	m_pStartLaser->SetCatchers(a_catcherPositions);
+}
+
+void Emitter::BlockLaser(sf::Vector2f a_blockPos) {
+	m_pStartLaser->BlockLaser(a_blockPos);
 }
 
 Emitter::~Emitter()

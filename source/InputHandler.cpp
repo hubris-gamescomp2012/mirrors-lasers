@@ -2,6 +2,7 @@
 #include <SFML\Window\Event.hpp>
 
 InputHandler::InputHandler()
+: m_LeftMouse(false)
 {
 	for(unsigned short i=0;i<sf::Keyboard::KeyCount;i++)
 	{
@@ -30,8 +31,18 @@ void InputHandler::HandleInputEvent(sf::Event& a_Event)
 		}
 	case(sf::Event::MouseMoved):
 		{
-			m_MousePos.x = a_Event.mouseMove.x;
-			m_MousePos.y = a_Event.mouseMove.y;
+			m_MousePos.x = (float)a_Event.mouseMove.x;
+			m_MousePos.y = (float)a_Event.mouseMove.y;
+			break;
+		}
+	case(sf::Event::MouseButtonPressed):
+		{
+			if (a_Event.mouseButton.button == sf::Mouse::Left) m_LeftMouse = true;
+			break;
+		}
+	case(sf::Event::MouseButtonReleased):
+		{
+			if (a_Event.mouseButton.button == sf::Mouse::Left) m_LeftMouse = false;
 			break;
 		}
 	}
@@ -44,6 +55,10 @@ int InputHandler::GetKeyDown(int a_KeyCode)
 		return KeysDown[a_KeyCode];
 	}
 	return 0;
+}
+
+bool InputHandler::GetLeftMouseDown() {
+	return m_LeftMouse;
 }
 
 sf::Vector2f InputHandler::GetMousePos()

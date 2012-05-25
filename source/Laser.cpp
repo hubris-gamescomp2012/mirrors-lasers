@@ -21,6 +21,7 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 ,	m_endDrawn(false)
 ,	m_endDrawnHack(false)
 ,	m_won(false)
+,   m_laserBlocked(false)
 //,	m_catcherPositions(NULL)
 {
 	MyType = LASER;
@@ -54,6 +55,14 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 	*/
 }
 
+void Laser::SetStartPos(sf::Vector2f a_startPos) {
+	m_StartPos = a_startPos;
+}
+
+sf::Vector2f Laser::GetHitPoint() {
+	return sf::Vector2f((float)m_hitPoint.x,(float)m_hitPoint.y);
+}
+
 Laser::~Laser()
 {
 	Hide();
@@ -74,6 +83,8 @@ Laser* Laser::GetPreviousSegment()
 
 void Laser::Update(float a_Dt)
 {
+	m_Sprite.sprite->setPosition(m_StartPos);
+
 	//raycast to determine the max length of this laser
 	cpVect cpStartPos;
 	cpStartPos.x = m_StartPos.x;
@@ -89,6 +100,7 @@ void Laser::Update(float a_Dt)
 	info.shape = NULL;
 
 	//cast ray
+	//cpShape* collided = cpSpaceSegmentQueryFirst(&m_Space, cpStartPos, cpEndPos, CP_ALL_LAYERS, CP_NO_GROUP, &info);
 	cpShape* collided = cpSpaceSegmentQueryFirst(&m_Space, cpStartPos, cpEndPos, CP_ALL_LAYERS, CP_NO_GROUP, &info);
 
 	//grab some helper data
@@ -130,7 +142,7 @@ void Laser::Update(float a_Dt)
 	}*/
 
 	//extend or reduce the laser to the max length
-	if(m_CurLength < m_MaxLength)
+	if(m_CurLength < m_MaxLength && !m_laserBlocked)
 	{
 		//update end position
 		//fuck you, lasers have velocity (but only when they're growing)
@@ -151,12 +163,13 @@ void Laser::Update(float a_Dt)
 			m_endDrawn = false;
 		}
 	}
-	else if(m_CurLength > m_MaxLength)
+	else
 	{
 		bool colPlayer = false;
 		//update end position
 		m_EndPos = m_StartPos + m_FacingDir * m_MaxLength;
-		sf::Vector2f diff = m_EndPos - m_StartPos;
+		//sf::Vector2f diff = m_EndPos - m_StartPos;
+		sf::Vector2f diff = m_blockPos - m_StartPos;
 		m_CurLength = VectorMagnitude(diff);
 
 		//update sprite
@@ -200,6 +213,11 @@ void Laser::Update(float a_Dt)
 			m_pAnimator->Update(a_Dt);
 	}
 	*/
+}
+
+void Laser::BlockLaser(sf::Vector2f a_blockPos) {
+	m_blockPos = a_blockPos;
+	m_laserBlocked = true;
 }
 
 void Laser::ExtendNewSegment(sf::Vector2f a_NewDir)
