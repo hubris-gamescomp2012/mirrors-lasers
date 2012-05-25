@@ -12,6 +12,7 @@ GameObject::GameObject(ResourceManager& a_ResMgr, cpSpace& a_Space)
 ,	m_pShape(NULL)
 ,	m_pBody(NULL)
 ,	MyType(INVALID)
+,	m_pInputHandler(NULL)
 {
 	//not all game objects have physbodies
 }
@@ -35,8 +36,10 @@ void GameObject::SetPosition(float a_X, float a_Y)
 	if(m_pBody && m_Sprite.sprite)
 	{
 		sf::Vector2u sprSize = m_Sprite.sprite->getTexture()->getSize();
-		m_pBody->p.x = a_X + sprSize.x/2;
-		m_pBody->p.y = a_Y + sprSize.y/2;
+		a_X += sprSize.x/2;
+		a_Y += sprSize.y/2;
+		m_pBody->p.x = a_X;
+		m_pBody->p.y = a_Y;
 		m_Sprite.sprite->setPosition(a_X, a_Y);
 	}
 	else if(m_Sprite.sprite)

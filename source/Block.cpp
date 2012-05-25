@@ -14,6 +14,7 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 ,	m_blockType(a_type)
 ,	m_pAnimator(NULL)
 {
+	bool seethrough = false;
 	m_Pos = a_Pos;
 	MyType = GameObject::BLOCK;
 	cpFloat width = 32;
@@ -26,6 +27,7 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 		case BLOCK_GLASS:
 			//
 			m_resMgr.CreateSprite("media/block_glass_32x32.png", &m_Sprite);
+			seethrough = true;
 			break;
 		case BLOCK_END:
 			//
@@ -99,24 +101,41 @@ Block::Block(ResourceManager& a_ResMgr, cpSpace& a_Space, int a_type, sf::Vector
 	m_BoxBounds.Top = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y), cpv(a_Pos.x + sprSize.x, a_Pos.y), 1);
 	m_BoxBounds.Top->collision_type = SURFACE_TOP;
 	m_BoxBounds.Top->data = this;
+	if(seethrough)
+		cpShapeSetLayers(m_BoxBounds.Top, cpLayers(GLASSBLOCK));
 	cpShapeSetFriction(m_BoxBounds.Top, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Top);
 	//bottom
 	m_BoxBounds.Bottom = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y + sprSize.y), cpv(a_Pos.x + sprSize.x, a_Pos.y + sprSize.y), 1);
-	m_BoxBounds.Bottom->collision_type = SURFACE_BOTTOM;
+	if(seethrough)
+		m_BoxBounds.Bottom->collision_type = GLASSBLOCK;
+	else
+		m_BoxBounds.Bottom->collision_type = SURFACE_BOTTOM;
 	m_BoxBounds.Bottom->data = this;
+	if(seethrough)
+		cpShapeSetLayers(m_BoxBounds.Bottom, cpLayers(GLASSBLOCK));
 	cpShapeSetFriction(m_BoxBounds.Bottom, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Bottom);
 	//left
 	m_BoxBounds.Left = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x, a_Pos.y + sprSize.y), cpv(a_Pos.x, a_Pos.y), 1);
-	m_BoxBounds.Left->collision_type = SURFACE_LEFT;
+	if(seethrough)
+		m_BoxBounds.Left->collision_type = GLASSBLOCK;
+	else
+		m_BoxBounds.Left->collision_type = SURFACE_LEFT;
 	m_BoxBounds.Left->data = this;
+	if(seethrough)
+		cpShapeSetLayers(m_BoxBounds.Left, cpLayers(GLASSBLOCK));
 	cpShapeSetFriction(m_BoxBounds.Left, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Left);
 	//right
 	m_BoxBounds.Right = cpSegmentShapeNew(a_Space.staticBody, cpv(a_Pos.x + sprSize.x, a_Pos.y), cpv(a_Pos.x + sprSize.x, a_Pos.y + sprSize.y), 1);
-	m_BoxBounds.Right->collision_type = SURFACE_RIGHT;
+	if(seethrough)
+		m_BoxBounds.Right->collision_type = GLASSBLOCK;
+	else
+		m_BoxBounds.Right->collision_type = SURFACE_RIGHT;
 	m_BoxBounds.Right->data = this;
+	if(seethrough)
+		cpShapeSetLayers(m_BoxBounds.Right, cpLayers(GLASSBLOCK));
 	cpShapeSetFriction(m_BoxBounds.Right, 0.5);
 	cpSpaceAddShape(&a_Space, m_BoxBounds.Right);
 

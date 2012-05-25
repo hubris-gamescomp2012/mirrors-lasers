@@ -2,6 +2,8 @@
 #include "Helpers.hpp"
 #include "Animator.hpp"
 #include "Player.hpp"
+#include "Mirror.hpp"
+
 #include <iostream>
 
 #include <SFML\Graphics\Sprite.hpp>
@@ -34,25 +36,6 @@ Laser::Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPo
 	m_Sprite.sprite->setPosition(a_StartPos);
 	m_Sprite.sprite->setOrigin(0,4);
 	m_Sprite.sprite->setRotation(VectorToAngle(m_FacingDir));
-
-	//
-	
-	//create the physbody
-	/*
-	cpFloat radius = 32;
-	cpFloat mass = 1;
-	cpFloat moment = cpMomentForCircle(mass, radius, 0, cpv(0,0));
-
-	m_pBody = cpSpaceAddBody(&a_Space, cpBodyNew(mass, moment));
-	m_pBody->data = this;
-	cpBodySetPos(m_pBody, cpv(a_StartPos.x, a_StartPos.y));
-
-	m_pShape = cpSpaceAddShape(&a_Space, cpCircleShapeNew(m_pBody, radius, cpv(0,0)));
-	m_pShape->data = this;
-	m_pShape->sensor = 1;
-
-	cpShapeSetCollisionType(m_pShape, LASER);
-	*/
 }
 
 void Laser::SetStartPos(sf::Vector2f a_startPos) {
@@ -100,49 +83,14 @@ void Laser::Update(float a_Dt)
 	info.shape = NULL;
 
 	//cast ray
-	//cpShape* collided = cpSpaceSegmentQueryFirst(&m_Space, cpStartPos, cpEndPos, CP_ALL_LAYERS, CP_NO_GROUP, &info);
-	cpShape* collided = cpSpaceSegmentQueryFirst(&m_Space, cpStartPos, cpEndPos, CP_ALL_LAYERS, CP_NO_GROUP, &info);
+	cpShape* collided = cpSpaceSegmentQueryFirst(&m_Space, cpStartPos, cpEndPos, ~(cpLayers)COLLIDABLE::GLASSBLOCK, CP_NO_GROUP, &info);
 
 	//grab some helper data
 	m_MaxLength = float(min( cpSegmentQueryHitDist(cpStartPos, cpEndPos, info), MAX_LASER_DIST ));
 	m_hitPoint = cpSegmentQueryHitPoint(cpStartPos, cpEndPos, info);
 
-	GameObject* pGameObj = NULL;
-	if(collided)
-		pGameObj = (GameObject*)collided->data;
-
-	/*
-	//check to see if we hit the player
-	Player* pPlayer = NULL;
-	bool colPlayer = false;
-	if(pGameObj && pGameObj->GetType() == PLAYER)
-	{
-		//TODO: only reflect if the player is within 180 degrees of us?
-
-		//reflect le laser
-		if(!m_pNextChainSegment)
-			ExtendNewSegment(m_FacingDir);
-		
-		pPlayer = (Player*)pGameObj;
-		m_MaxLength = pPlayer->GetPosition().x;
-
-		colPlayer = true;
-	}
-	else
-	{
-		//stop reflecting laser
-		Laser* pCurLaser = m_pNextChainSegment;
-		m_pNextChainSegment = NULL;
-		while(pCurLaser)
-		{
-			m_resMgr.RemoveDrawableSprite(pCurLaser->GetSprite());
-			pCurLaser = pCurLaser->GetNextSegment();
-			delete pCurLaser;
-		}
-	}*/
-
 	//extend or reduce the laser to the max length
-	if(m_CurLength < m_MaxLength && !m_laserBlocked)
+	if(m_CurLength < m_MaxLength)
 	{
 		//update end position
 		//fuck you, lasers have velocity (but only when they're growing)
@@ -155,64 +103,29 @@ void Laser::Update(float a_Dt)
 		sf::Vector2f diff = m_EndPos - m_StartPos;
 		float newSize = VectorMagnitude(diff);
 		m_Sprite.sprite->setScale(newSize / baseSize, 1);
-
-		if(m_endDrawn)
-		{
-			m_resMgr.RemoveDrawableSprite(&m_endSprite);
-			m_resMgr.RemoveDrawableSprite(&m_reflectSprite);
-			m_endDrawn = false;
-		}
+		//m_resMgr.RemoveDrawableSprite(&m_endSprite);
 	}
 	else
 	{
-		bool colPlayer = false;
 		//update end position
 		m_EndPos = m_StartPos + m_FacingDir * m_MaxLength;
-		//sf::Vector2f diff = m_EndPos - m_StartPos;
-		sf::Vector2f diff = m_blockPos - m_StartPos;
+		sf::Vector2f diff = m_EndPos - m_StartPos;
+		m_endSprite.sprite->setPosition(m_EndPos);
+		//sf::Vector2f diff = m_blockPos - m_StartPos;
 		m_CurLength = VectorMagnitude(diff);
 
 		//update sprite
 		float baseSize = float(m_Sprite.sprite->getTexture()->getSize().x);
 		m_Sprite.sprite->setScale(m_CurLength / baseSize, 1);
+		//m_resMgr.AddDrawableSprite(&m_endSprite);
 
-		//Show the end sprite
-		if (!m_endDrawn)
-		{
-			if(colPlayer)
-				m_resMgr.AddDrawableSprite(&m_reflectSprite);
-			else
-				m_resMgr.AddDrawableSprite(&m_endSprite);
-			m_endDrawn = true;
-		}	
 		m_endDrawnHack = true;
 	}
 	
-	/*
-	//update reflected laser segment
-	if(pPlayer && m_pNextChainSegment)
+	/*if(m_pNextChainSegment)
 	{
-		//get the player's angle and position
-		m_pNextChainSegment->SetPosition(pPlayer->GetPosition());
-		m_pNextChainSegment->SetFacingDir(pPlayer->GetRedirectDir());		//assumes already normalised
-	}
-
-	//update endsprite
-	if(m_endDrawn)
-	{
-		//m_endSprite.sprite->setPosition(m_Sprite.sprite->getPosition().x+m_Sprite.sprite->getScale().x,m_Sprite.sprite->getPosition().y);
-		if(colPlayer && pPlayer)
-		{
-			sf::Vector2u sprSize = pPlayer->GetSprite()->sprite->getTexture()->getSize();//sprSize
-			sf::Vector2f playerPos = pPlayer->GetPosition();
-			m_reflectSprite.sprite->setPosition(playerPos.x, playerPos.y);
-		}
-		else
-			m_endSprite.sprite->setPosition(float(m_hitPoint.x)-4, float(m_hitPoint.y)-16);
-		if(m_pAnimator)
-			m_pAnimator->Update(a_Dt);
-	}
-	*/
+		m_pNextChainSegment->Update(a_Dt);
+	}*/
 }
 
 void Laser::BlockLaser(sf::Vector2f a_blockPos) {
@@ -220,9 +133,11 @@ void Laser::BlockLaser(sf::Vector2f a_blockPos) {
 	m_laserBlocked = true;
 }
 
-void Laser::ExtendNewSegment(sf::Vector2f a_NewDir)
+/*void Laser::ExtendNewSegment(sf::Vector2f a_NewDir)
 {
-	m_pNextChainSegment = new Laser(m_resMgr, m_Space, m_StartPos, a_NewDir);
+	m_pNextChainSegment = new Laser(m_resMgr, m_Space, m_EndPos, a_NewDir);
+	m_pNextChainSegment->m_pPreviousSegment = this;
+	m_resMgr.AddDrawableSprite(m_pNextChainSegment->GetSprite());
 	/*
 	// Calculate and create new laser path
 	sf::Vector2f laserPos = sf::Vector2f((float)startX,(float)startY);
@@ -260,8 +175,7 @@ void Laser::ExtendNewSegment(sf::Vector2f a_NewDir)
 
 		++iter;
 	}
-	*/
-}
+}*/
 
 void Laser::SetFacingDir(sf::Vector2f a_NewDir)
 {

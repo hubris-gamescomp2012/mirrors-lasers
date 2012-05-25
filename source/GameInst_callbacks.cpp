@@ -1,4 +1,6 @@
 #include "GameInst_callbacks.hpp"
+#include "Laser.hpp"
+#include "Mirror.hpp"
 
 cpBool PlayerSurfaceCollision(cpArbiter *arb, struct cpSpace *space, void *data)
 {
@@ -37,7 +39,8 @@ cpBool PlayerSurfaceCollision(cpArbiter *arb, struct cpSpace *space, void *data)
 
 cpBool LaserMirrorCollision(cpArbiter *arb, struct cpSpace *space, void *data)
 {
-	//
+	Laser* pLaser = (Laser*)arb->a_private->data;
+	Mirror* pMirror = (Mirror*)arb->b_private->data;
 	return 1;
 };
 
@@ -45,4 +48,16 @@ cpBool LaserSurfaceCollision(cpArbiter *arb, struct cpSpace *space, void *data)
 {
 	//
 	return 1;
+};
+
+cpBool PlayerMirrorCollision(cpArbiter *arb, struct cpSpace *space, void *data)
+{
+	//
+	return 0;
+};
+
+cpBool PlayerGlassCollision(cpArbiter *arb, struct cpSpace *space, void *data)
+{
+	//
+	return 0;
 };

@@ -15,12 +15,9 @@ class Laser : public GameObject
 {
 public:
 	Laser(ResourceManager& a_ResMgr, cpSpace& a_Space, sf::Vector2f a_StartPos, sf::Vector2f a_FacingDir = sf::Vector2f(1,-1));
-	~Laser();
+	virtual ~Laser();
 	virtual void Update(float a_Dt);
 	//
-	void ExtendNewSegment(sf::Vector2f a_NewDir);
-	Laser* GetNextSegment();
-	Laser* GetPreviousSegment();
 	void SetStartPos(sf::Vector2f a_startPos);
 	void BlockLaser(sf::Vector2f a_blockPos);
 	//
@@ -30,8 +27,14 @@ public:
 	bool GetWon();
 	sf::Vector2f GetHitPoint();
 	//
-private:
 	sf::Vector2f m_StartPos;
+	//
+	Laser* GetNextSegment();
+	Laser* GetPreviousSegment();
+	//
+private:
+	//void ExtendNewSegment(sf::Vector2f a_NewDir);
+	//
 	sf::Vector2f m_EndPos;
 	sf::Vector2f m_blockPos;
 	float m_CurLength;

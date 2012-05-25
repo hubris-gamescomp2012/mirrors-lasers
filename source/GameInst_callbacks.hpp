@@ -11,4 +11,8 @@ cpBool LaserMirrorCollision(cpArbiter *arb, struct cpSpace *space, void *data);
 
 cpBool LaserSurfaceCollision(cpArbiter *arb, struct cpSpace *space, void *data);
 
+cpBool PlayerMirrorCollision(cpArbiter *arb, struct cpSpace *space, void *data);
+
+cpBool PlayerGlassCollision(cpArbiter *arb, struct cpSpace *space, void *data);
+
 #endif	//GAMEINST_CALLBACKS_HPP

@@ -22,6 +22,8 @@ public:
 	void ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions);
 	void BlockLaser(sf::Vector2f a_blockPos);
 	//
+	virtual void SetPosition(sf::Vector2f a_NewPos);
+	//
 private:
 	cpShape* m_pReflectLine;
 	cpBody* m_pReflectBody;
