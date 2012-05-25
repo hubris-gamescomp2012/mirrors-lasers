@@ -46,6 +46,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>C:\Users\jrensenbrink\Desktop\test\mirrors-lasers\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Users\jrensenbrink\Desktop\test\mirrors-lasers\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\jrensenbrink\Desktop\test\mirrors-lasers\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

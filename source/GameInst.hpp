@@ -36,7 +36,7 @@ public:
 	GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_Renderer);
 	bool Start();
 	void Stop();
-	void LoadLevel();
+	void LoadLevel(int levelNum = 1);
 	void UnloadLevel();
 	virtual void Update(float a_dt);
 	virtual void UpdateGUISizes();
@@ -46,6 +46,8 @@ public:
 	void SetCursor(Cursor* a_pNewCursor);
 	//
 private:
+	int curlevel;
+	//
 	Player* m_pPlayer;
 	Cursor* m_pCursor;
 	std::vector<Block*> m_blocks;

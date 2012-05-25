@@ -14,12 +14,15 @@ class InputHandler
 public:
 	InputHandler();
 	void HandleInputEvent(sf::Event& a_Event);
+	bool GetLeftMouseDown();
 	//
 	int GetKeyDown(int a_KeyCode);	//returns a 1 if down, 0 if nonexistent key or key up
 	sf::Vector2f GetMousePos();
+
 private:
 	std::vector<int> KeysDown;
 	sf::Vector2f m_MousePos;
+	bool m_LeftMouse;
 	//
 };
 

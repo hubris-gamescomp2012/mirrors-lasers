@@ -6,6 +6,7 @@
 #include "Player.hpp"
 #include "Emitter.hpp"
 #include "Cursor.hpp"
+#include "Mirror.hpp"
 
 #include "Defs.hpp"
 #include "GameInst_callbacks.hpp"
@@ -27,6 +28,7 @@ GameInst::GameInst(GUIManager& a_GUIMgr, ResourceManager& a_ResMgr, Renderer& a_
 ,	m_winTimer(0.0f)
 	//
 ,	m_pCursor(NULL)
+,	curlevel(1)
 {
 	//grab the screen dimensions
 	sf::Vector2f windowDim = m_GUIMgr.GetWindowDim();
@@ -60,7 +62,7 @@ bool GameInst::Start()
 	return true;
 }
 
-void GameInst::LoadLevel()
+void GameInst::LoadLevel(int levelNum)
 {
 	sf::Vector2f windowDim = m_GUIMgr.GetWindowDim();
 
@@ -95,14 +97,21 @@ void GameInst::LoadLevel()
 	cpShapeSetCollisionType(m_WorldBounds.Right, SURFACE_LEFT);
 	
 	//player-surface collision callbacks
-	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_TOP,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
-	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_BOTTOM,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
-	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_LEFT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
-	cpSpaceAddCollisionHandler(m_pSpace,PLAYER, SURFACE_RIGHT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace, PLAYER, SURFACE_TOP,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace, PLAYER, SURFACE_BOTTOM,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace, PLAYER, SURFACE_LEFT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+	cpSpaceAddCollisionHandler(m_pSpace, PLAYER, SURFACE_RIGHT,cpCollisionBeginFunc(PlayerSurfaceCollision),NULL,NULL,NULL,NULL);
+
+	cpSpaceAddCollisionHandler(m_pSpace, PLAYER, MIRROR,cpCollisionBeginFunc(PlayerMirrorCollision),NULL,NULL,NULL,NULL);
+
+	//cpSpaceAddCollisionHandler(m_pSpace, LASER, GLASSBLOCK ,cpCollisionBeginFunc(PlayerGlassCollision),NULL,NULL,NULL,NULL);
+
+	//cpSpaceAddCollisionHandler(m_pSpace, LASER, MIRROR,cpCollisionBeginFunc(LaserMirrorCollision),NULL,NULL,NULL,NULL);
 
 	//load level data from file
 	std::fstream file;
-	file.open(("media/level1.txt"));
+	std::string levelName = "media/level_0" + Num2Str(levelNum) + ".txt";
+	file.open(levelName);
 	std::string line;
 	int curLine = 0;
 
@@ -129,6 +138,13 @@ void GameInst::LoadLevel()
 			case('#'):
 				{
 					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_SOLID, sf::Vector2f(float(i)*32,float(curLine)*32) );
+					m_blocks.push_back(block);
+					m_Renderer.AddDrawableSprite(block->GetSprite());
+					break;
+				}
+			case('g'):
+				{
+					Block *block = new Block(m_ResMgr, *m_pSpace, Block::BLOCK_GLASS, sf::Vector2f(float(i)*32,float(curLine)*32) );
 					m_blocks.push_back(block);
 					m_Renderer.AddDrawableSprite(block->GetSprite());
 					break;
@@ -198,7 +214,8 @@ void GameInst::UnloadLevel()
 
 	//clear player
 	m_Renderer.RemoveDrawableSprite(m_pPlayer->GetSprite());
-	delete m_pPlayer;
+	m_Renderer.RemoveDrawableSprite(m_pPlayer->GetMirror()->GetSprite());
+	//delete m_pPlayer;
 	m_pPlayer = NULL;
 }
 
@@ -210,13 +227,27 @@ void GameInst::Stop()
 	m_pPlayer->SetInputHandler(NULL);
 
 	UnloadLevel();
-	
 }
 
 void GameInst::Update(float a_dt)
 {
 	if(m_Running)
 	{
+		if (m_won) {
+			m_winTimer += a_dt;
+			if (m_winTimer > 3.0f) {
+				m_winImage->SetPosition(sf::Vector2f(2048,2048));
+				m_GUIMgr.RemoveWidget(m_winImage);
+				m_won = false;
+				m_winTimer = 0.0f;
+				UnloadLevel();
+				if(curlevel < 4)
+					curlevel++;
+				LoadLevel(curlevel);
+				return;
+			}
+		}
+
 		//update physworld
 		/*m_tLeftPhysUpdate -= a_dt;
 		if(m_tLeftPhysUpdate < 0)
@@ -230,7 +261,20 @@ void GameInst::Update(float a_dt)
 		{
 			m_pPlayer->SetRedirectDir( VectorNormalise(m_pCursor->GetPosition() - m_pPlayer->GetPosition()) );
 		}
+		for (auto it = Emitters.begin(); it != Emitters.end();++it)
+		{
+			m_pPlayer->ParseEmitter(*it);
+		}
 		m_pPlayer->Update(a_dt);
+		m_pPlayer->ParseCatchers(catcherPositions);
+		if (m_pPlayer->GetWon()) {
+			if (!m_won) {
+				m_winImage->SetPosition(sf::Vector2f(512-(float)m_winImageSource.getSize().x/2,386-(float)m_winImageSource.getSize().y/2));
+				m_GUIMgr.AddWidget(m_winImage);
+				//Widgets.push_back(winText);
+				m_won = true;
+			}
+		}
 
 		//update emitters (emitters update their individual laser chains)
 		for (auto it = Emitters.begin(); it != Emitters.end();++it)
@@ -244,17 +288,6 @@ void GameInst::Update(float a_dt)
 					m_GUIMgr.AddWidget(m_winImage);
 					//Widgets.push_back(winText);
 					m_won = true;
-				} else {
-					m_winTimer += a_dt;
-					if (m_winTimer > 3.0f) {
-						m_winImage->SetPosition(sf::Vector2f(2048,2048));
-						m_GUIMgr.RemoveWidget(m_winImage);
-						m_won = false;
-						m_winTimer = 0.0f;
-						UnloadLevel();
-						LoadLevel();
-						return;
-					}
 				}
 			}
 		}

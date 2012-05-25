@@ -26,6 +26,7 @@ bool ResourceManager::LoadSFMLImage( std::string FilePath, sf::Image** pOut )
 	}
 
 	//could not load the image from file
+	std::cout << "Failed loading image \"" << FilePath << "\".\n";
 	return false;
 }
 
@@ -44,6 +45,7 @@ bool ResourceManager::LoadSFMLTexture( std::string FilePath, sf::Texture** pOut 
 	}
 
 	//could not load the image from file
+	std::cout << "Failed loading texture \"" << FilePath << "\".\n";
 	return false;
 }
 
