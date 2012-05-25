@@ -16,7 +16,9 @@ public:
 	~Emitter();
 	virtual void Update(float a_Dt);
 	void ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions);
+	sf::Vector2f GetHitPoint();
 	bool GetWon();
+	void BlockLaser(sf::Vector2f a_blockPos);
 	//
 private:
 	Laser* m_pStartLaser;

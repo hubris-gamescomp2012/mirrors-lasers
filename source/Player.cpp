@@ -16,6 +16,12 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 ,	RedirectAngle(0)
 ,	m_RedirectDir(0,0)
 ,	m_pMirror(NULL)
+,	m_activeMirrors(0)
+,	m_Space(a_Space)
+,	m_pMirror1(NULL)
+,	m_pMirror2(NULL)
+,	m_pMirror3(NULL)
+,   m_mousePressed(false)
 {
 	MyType = PLAYER;
 	//create a sprite
@@ -44,29 +50,59 @@ Player::Player(ResourceManager& a_ResMgr, cpSpace& a_Space)
 	m_pShape->data = this;
 
 	cpShapeSetCollisionType(m_pShape, COLLIDABLE::PLAYER);
+	cpShapeSetLayers(m_pShape, (cpLayers)COLLIDABLE::PLAYER);
 
 	//create the mirror
 	m_pMirror = new Mirror(a_ResMgr, a_Space);
 
 	//create some spare mirrors
 	//
-	m_resMgr.CreateSprite("media/mirror1.png", &SpareMirrorOne.sprite);
+	/*
+	m_resMgr.CreateSprite("media/player_body_64x64.png", &SpareMirrorOne.sprite);
 	float randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	float randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	SpareMirrorOne.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f(randX, randY));
 	//m_resMgr.AddDrawableSprite(&SpareMirrorOne.sprite);
 	//
-	m_resMgr.CreateSprite("media/mirror1.png", &SpareMirrorTwo.sprite);
+	m_resMgr.CreateSprite("media/player_body_64x64.png", &SpareMirrorTwo.sprite);
 	randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	SpareMirrorTwo.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f(randX, randY));
 	//m_resMgr.AddDrawableSprite(&SpareMirrorTwo.sprite);
 	//
-	m_resMgr.CreateSprite("media/mirror1.png", &SpareMirrorThree.sprite);
+	m_resMgr.CreateSprite("media/player_body_64x64.png", &SpareMirrorThree.sprite);
 	randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	SpareMirrorThree.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f(randX, randY));
 	//m_resMgr.AddDrawableSprite(&SpareMirrorThree.sprite);
+	*/
+}
+
+Player::~Player() {
+	if (m_activeMirrors > 0) {
+		m_pMirror1->Hide();
+		delete m_pMirror1;
+		m_pMirror1 = NULL;
+	}
+
+	if (m_activeMirrors > 1) {
+		m_pMirror2->Hide();
+		delete m_pMirror2;
+		m_pMirror2 = NULL;
+	}
+
+	if (m_activeMirrors > 2) {
+		m_pMirror3->Hide();
+		delete m_pMirror3;
+		m_pMirror3 = NULL;
+	}
+
+	if (m_pMirror)
+	{
+		m_pMirror->Hide();
+		delete m_pMirror;
+		m_pMirror = NULL;
+	}
 }
 
 void Player::UpdateFloatingMirrors(float a_Dt)
@@ -160,9 +196,25 @@ void Player::UpdateFloatingMirrors(float a_Dt)
 		SpareMirrorThree.sprite.sprite->setPosition(sprPos + moveDir * SpareMirrorThree.velocity);
 	}
 	*/
-	SpareMirrorOne.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
-	SpareMirrorTwo.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
-	SpareMirrorThree.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
+	//SpareMirrorOne.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
+	//SpareMirrorTwo.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
+	//SpareMirrorThree.sprite.sprite->setPosition(m_Sprite.sprite->getPosition() + sf::Vector2f( float(rand())/RAND_MAX * 64.f - 32.f, float(rand())/RAND_MAX * 64.f - 16.f) );
+}
+
+bool Player::GetWon() {
+	bool won = false;
+	if (!won) won = m_pMirror->GetWon();
+	if (!won && m_pMirror1) won = m_pMirror1->GetWon();
+	if (!won && m_pMirror2) won = m_pMirror2->GetWon();
+	if (!won && m_pMirror3) won = m_pMirror3->GetWon();
+	return won;
+}
+
+void Player::ParseCatchers(std::vector<sf::Vector2f>& a_catcherPositions) {
+	m_pMirror->ParseCatchers(a_catcherPositions);
+	if (m_pMirror1) m_pMirror1->ParseCatchers(a_catcherPositions);
+	if (m_pMirror2) m_pMirror2->ParseCatchers(a_catcherPositions);
+	if (m_pMirror3) m_pMirror3->ParseCatchers(a_catcherPositions);
 }
 
 void Player::Update(float a_Dt)
@@ -189,6 +241,41 @@ void Player::Update(float a_Dt)
 			m_pBody->v.x *= 0.9;
 		}
 
+		// Place mirror
+		if (m_pInputHandler->GetLeftMouseDown() && !m_mousePressed)
+		{
+			m_mousePressed = true;
+			switch (m_activeMirrors) 
+			{
+				case 0:
+					{
+						m_pMirror1 = new Mirror(m_resMgr, m_Space);
+						m_pMirror1->SetPosition(m_Sprite.sprite->getPosition());
+						m_pMirror1->Show();
+						++m_activeMirrors;
+						break;
+					}
+				case 1:
+					{
+						m_pMirror2 = new Mirror(m_resMgr, m_Space);
+						m_pMirror2->SetPosition(m_Sprite.sprite->getPosition());
+						m_pMirror2->Show();
+						++m_activeMirrors;
+						break;
+					}
+				case 2:
+					{
+						m_pMirror3 = new Mirror(m_resMgr, m_Space);
+						m_pMirror3->SetPosition(m_Sprite.sprite->getPosition());
+						m_pMirror3->Show();
+						++m_activeMirrors;
+						break;
+					}
+			}
+		} else {
+			m_mousePressed = false;
+		}
+
 		//jumping
 		if(m_pInputHandler->GetKeyDown(sf::Keyboard::Space))
 		{
@@ -200,16 +287,31 @@ void Player::Update(float a_Dt)
 		}
 	}
 
+	//GetAngleFromDir(sf::Vector2f(1,0));
+
 	//update floating mirrors
 	UpdateFloatingMirrors(a_Dt);
+
+	// Update player's mirror
+	m_pMirror->Update(a_Dt);
+	if (m_pMirror1) m_pMirror1->Update(a_Dt);
+	if (m_pMirror2) m_pMirror2->Update(a_Dt);
+	if (m_pMirror3) m_pMirror3->Update(a_Dt);
 
 	//update current mirror
 	sf::Vector2f curPos = m_Sprite.sprite->getPosition();
 	sf::Vector2u sprSize = m_pMirror->GetSprite()->sprite->getTexture()->getSize();
-	curPos.y += 16.f + sprSize.y / 2;
-	curPos.x += sprSize.x / 2;
+	//curPos.y += 16.f + sprSize.y / 2;
+	//curPos.x += sprSize.x / 2;
 	m_pMirror->SetPosition(curPos);
 	m_pMirror->SetRotationAngle(GetAngleFromDir( VectorNormalise(m_pInputHandler->GetMousePos() - curPos) ));
+}
+
+void Player::ParseEmitter(Emitter* a_emitter) {
+	m_pMirror->ParseEmitter(a_emitter);
+	if (m_pMirror1) m_pMirror1->ParseEmitter(a_emitter);
+	if (m_pMirror2) m_pMirror2->ParseEmitter(a_emitter);
+	if (m_pMirror3) m_pMirror3->ParseEmitter(a_emitter);
 }
 
 void Player::SetOnGround()
@@ -242,9 +344,10 @@ void Player::SetPosition(float a_X, float a_Y)
 	//call parent function
 	GameObject::SetPosition(a_X, a_Y);
 
-	m_pMirror->SetPosition(a_X, a_Y);
+	m_pMirror->SetPosition(sf::Vector2f(a_X, a_Y));
 
 	//move the spare mirrors
+	/*
 	float randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	float randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	SpareMirrorOne.sprite.sprite->setPosition(float(m_pBody->p.x) + 0, float(m_pBody->p.y) + 0);
@@ -256,4 +359,10 @@ void Player::SetPosition(float a_X, float a_Y)
 	randX = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	randY = (float(rand()) / (RAND_MAX / 2) - 1) * 64.f;
 	SpareMirrorThree.sprite.sprite->setPosition(float(m_pBody->p.x) + 0, float(m_pBody->p.y) + 0);
+	*/
+}
+
+Mirror* Player::GetMirror()
+{
+	return m_pMirror;
 }

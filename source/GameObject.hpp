@@ -10,7 +10,7 @@ class GameObject
 {
 public:
 	GameObject(ResourceManager& a_ResMgr, cpSpace& a_Space);
-	~GameObject();
+	virtual ~GameObject();
 	enum Type
 	{
 		INVALID = 0,
@@ -21,6 +21,7 @@ public:
 		CATCHER,
 		CURSOR,
 		LASER,
+		MIRROR,
 		//
 		MAX
 	};
@@ -50,6 +51,10 @@ protected:
 	SpriteID m_Sprite;
 	//
 	InputHandler* m_pInputHandler;
+
+private:
+	GameObject(const GameObject &);
+	GameObject &operator=(const GameObject &);
 };
 
 #endif	//GAMEOBJ_HPP
